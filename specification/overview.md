@@ -60,12 +60,16 @@ To accomplish these goals, each signal consists of four types of packages: API, 
 
 API packages consist of the cross-cutting public interfaces used for instrumentation. Any portion of an OpenTelemetry client which is imported into third-party libraries and application code is considered part of the API.
 
+API是一系列接口
+
 ### SDK
 
 The SDK is the implementation of the API provided by the OpenTelemetry project. Within an application, the SDK is installed and managed by the [application owner](glossary.md#application-owner).
 Note that the SDK includes additional public interfaces which are not considered part of the API package, as they are not cross-cutting concerns. These public interfaces are defined as [constructors](glossary.md#constructors) and [plugin interfaces](glossary.md#sdk-plugins).
 Application owners use the SDK constructors; [plugin authors](glossary.md#plugin-author) use the SDK plugin interfaces.
 [Instrumentation authors](glossary.md#instrumentation-author) MUST NOT directly reference any SDK package of any kind, only the API.
+
+SDK是接口的实现
 
 ### Semantic Conventions
 
@@ -83,6 +87,8 @@ The [YAML](../semantic_conventions/README.md) files MUST be used as the
 source of truth for generation. Each language implementation SHOULD
 provide language-specific support to the
 [code generator](https://github.com/open-telemetry/build-tools/tree/main/semantic-conventions#code-generator).
+
+使用yaml文件定义规范
 
 ### Contrib Packages
 
@@ -148,6 +154,7 @@ Temporal relationships between Spans in a single Trace
     [Span C········································]
          [Span E·······]        [Span F··]
 ```
+一个trace相当于完整的调用链路，span相当于一部分
 
 ### Spans
 
