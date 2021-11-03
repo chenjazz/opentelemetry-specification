@@ -55,8 +55,8 @@ Signals share a common subsystem – **context propagation** – but they functi
 Each signal provides a mechanism for software to describe itself. A codebase, such as web framework or a database client, takes a dependency on various signals in order to describe itself. OpenTelemetry instrumentation code can then be mixed into the other code within that codebase.
 This makes OpenTelemetry a [**cross-cutting concern**](https://en.wikipedia.org/wiki/Cross-cutting_concern) - a piece of software which is mixed into many other pieces of software in order to provide value. Cross-cutting concerns, by their very nature, violate a core design principle – separation of concerns. As a result, OpenTelemetry client design requires extra care and attention to avoid creating issues for the codebases which depend upon these cross-cutting APIs.
 
-每个signal提供了软件机制描述他自己。一个代码库，像是web框架或者数据库客户端，需要以来不同的signal描述自己。OpenTelemetry 插入的代码能够混合代码库中的其他代码。？
-这使得OpenTelemetry成为代码交叉-一些代码混合另一些代码来提供值。代码交叉，显然，违反了核心设计原则--分离原则。所以，OpenTelemetry 客户端设计需要格外小心和注意，以避免为依赖于这些横切 API 的代码库产生问题。
+每个signal提供了软件机制描述他自己。一个代码库，像是web框架或者数据库客户端，需要以来不同的signal描述自己。然后可以将 OpenTelemetry 检测代码混合到该代码库中的其他代码中。？
+这使得 OpenTelemetry 成为一个跨领域的关注点?——一种混合到许多其他软件中以提供价值的软件。。代码交叉，显然，违反了核心设计原则--分离原则。所以，OpenTelemetry 客户端设计需要格外小心和注意，以避免为依赖于这些横切 API 的代码库产生问题。
 
 OpenTelemetry clients are designed to separate the portion of each signal which must be imported as cross-cutting concerns from the portions which can be managed independently. OpenTelemetry clients are also designed to be an extensible framework.
 To accomplish these goals, each signal consists of four types of packages: API, SDK, Semantic Conventions, and Contrib.
@@ -67,7 +67,7 @@ OpenTelemetry 客户端旨在将每个信号中必须作为横切关注点导入
 
 API packages consist of the cross-cutting public interfaces used for instrumentation. Any portion of an OpenTelemetry client which is imported into third-party libraries and application code is considered part of the API.
 
-API是一系列接口
+API 包由用于检测的横切公共接口组成。导入第三方库和应用程序代码的 OpenTelemetry 客户端的任何部分都被视为 API 的一部分。
 
 ### SDK
 
