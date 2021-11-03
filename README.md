@@ -33,25 +33,25 @@ Technical committee holds regular meetings, notes are held
 - [Overview](specification/overview.md) 总览
 - [Glossary](specification/glossary.md)  词汇表
 - [Versioning and stability for OpenTelemetry clients](specification/versioning-and-stability.md)
-- [Library Guidelines](specification/library-guidelines.md)
+- [Library Guidelines](specification/library-guidelines.md) 库准则
   - [Package/Library Layout](specification/library-layout.md)
   - [General error handling guidelines](specification/error-handling.md)
-- API Specification
+- API Specification API规范
   - [Context](specification/context/context.md)
     - [Propagators](specification/context/api-propagators.md)
   - [Baggage](specification/baggage/api.md)
   - [Tracing](specification/trace/api.md)
   - [Metrics](specification/metrics/api.md)
-- SDK Specification
+- SDK Specification  SDK规范
   - [Tracing](specification/trace/sdk.md)
   - [Resource](specification/resource/sdk.md)
   - [Configuration](specification/sdk-configuration.md)
-- Data Specification
+- Data Specification   数据规范
   - [Semantic Conventions](specification/overview.md#semantic-conventions)
   - [Protocol](specification/protocol/README.md)
     - [Metrics](specification/metrics/datamodel.md)
     - [Logs](specification/logs/data-model.md)
-- About the Project
+- About the Project   关于工程
   - [Timeline](#project-timeline)
   - [Notation Conventions and Compliance](#notation-conventions-and-compliance)
   - [Versioning the Specification](#versioning-the-specification)
