@@ -1,4 +1,4 @@
-# OpenTelemetry Specification
+# OpenTelemetry Specification 规范
 
 [![Checks](https://github.com/open-telemetry/opentelemetry-specification/workflows/Checks/badge.svg?branch=main)](https://github.com/open-telemetry/opentelemetry-specification/actions?query=workflow%3A%22Checks%22+branch%3Amain)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/open-telemetry/specification.svg)
@@ -6,8 +6,11 @@
 ![OpenTelemetry Logo](https://opentelemetry.io/img/logos/opentelemetry-horizontal-color.png)
 
 _Curious about what OpenTelemetry is? Check out our [website](https://opentelemetry.io) for an explanation!_
+好奇什么是OpenTelemetry，查看我们的网站获取解释
 
 The OpenTelemetry specification describes the cross-language requirements and expectations for all OpenTelemetry implementations. Substantive changes to the specification must be proposed using the [OpenTelemetry Enhancement Proposal](https://github.com/open-telemetry/oteps) process. Small changes, such as clarifications, wording changes, spelling/grammar corrections, etc. can be made directly via pull requests.
+
+对于OT实现，OT规范描述跨语言需求和？,规范实质性的改变将使用---，小的改变将会直接pull requests。
 
 Questions that needs additional attention can be brought to the regular
 specifications meeting. EU and US timezone friendly meeting is held every
@@ -16,10 +19,13 @@ doc](https://docs.google.com/document/d/1-bCYkN-DWJq4jw1ybaDZYYmx-WAe6HnwfWbkm8d
 APAC timezone friendly meeting is held Tuesdays, 4PM pacific time. See
 [OpenTelemetry calendar](https://github.com/open-telemetry/community#calendar).
 
+额外需要注意的问题将会带入常规会议。会议时间，会议笔记等信息--。
+
 Escalations to technical committee may be made over the
 [e-mail](https://github.com/open-telemetry/community#tc-technical-committee).
 Technical committee holds regular meetings, notes are held
 [here](https://docs.google.com/document/d/17v2RMZlJZkgoPYHZhIFTVdDqQMIAH8kzo8Sl2kP3cbY/edit?usp=sharing).
+技术委员会的记录在这。
 
 ## Table of Contents
 
