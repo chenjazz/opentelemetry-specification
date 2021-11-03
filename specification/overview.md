@@ -56,10 +56,12 @@ Each signal provides a mechanism for software to describe itself. A codebase, su
 This makes OpenTelemetry a [**cross-cutting concern**](https://en.wikipedia.org/wiki/Cross-cutting_concern) - a piece of software which is mixed into many other pieces of software in order to provide value. Cross-cutting concerns, by their very nature, violate a core design principle – separation of concerns. As a result, OpenTelemetry client design requires extra care and attention to avoid creating issues for the codebases which depend upon these cross-cutting APIs.
 
 每个signal提供了软件机制描述他自己。一个代码库，像是web框架或者数据库客户端，需要以来不同的signal描述自己。OpenTelemetry 插入的代码能够混合代码库中的其他代码。？
-这使得OpenTelemetry成为代码交叉-一些代码混合另一些代码来提供值。代码交叉，显然，违反了核心设计原则--分离原则。所以，OpenTelemetry 客户端设计的时候，使用交叉api,需要额外注意避免照成问题。
+这使得OpenTelemetry成为代码交叉-一些代码混合另一些代码来提供值。代码交叉，显然，违反了核心设计原则--分离原则。所以，OpenTelemetry 客户端设计需要格外小心和注意，以避免为依赖于这些横切 API 的代码库产生问题。
 
 OpenTelemetry clients are designed to separate the portion of each signal which must be imported as cross-cutting concerns from the portions which can be managed independently. OpenTelemetry clients are also designed to be an extensible framework.
 To accomplish these goals, each signal consists of four types of packages: API, SDK, Semantic Conventions, and Contrib.
+
+OpenTelemetry 客户端旨在将每个信号中必须作为横切关注点导入的部分与可以独立管理的部分分开。OpenTelemetry 客户端也被设计成一个可扩展的框架.为了实现这些目标，每个signal由四种类型的包组成：API、SDK、语义约定和 Contrib。
 
 ### API
 
