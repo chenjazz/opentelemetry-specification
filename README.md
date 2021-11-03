@@ -25,7 +25,8 @@ Escalations to technical committee may be made over the
 [e-mail](https://github.com/open-telemetry/community#tc-technical-committee).
 Technical committee holds regular meetings, notes are held
 [here](https://docs.google.com/document/d/17v2RMZlJZkgoPYHZhIFTVdDqQMIAH8kzo8Sl2kP3cbY/edit?usp=sharing).
-技术委员会的记录在这。
+
+升级的问题，技术委员会将会发邮件，做的记录在这。
 
 ## Table of Contents
 
