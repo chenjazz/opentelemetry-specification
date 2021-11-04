@@ -300,7 +300,7 @@ responsibilities further into individual `Injector`s and `Extractor`s. A
 
 语言可以选择将 Propagator 类型实现为暴露 Inject 和 Extract 方法的单个对象，或者他们可以选择将职责进一步划分为单独的 Injector 和 Extractor。传播器可以通过组合单独的注入器和提取器来实现。
 
-## Composite Propagator
+## Composite Propagator  复合传播器
 
 Implementations MUST offer a facility to group multiple `Propagator`s
 from different cross-cutting concerns in order to leverage them as a
@@ -319,9 +319,10 @@ There MUST be functions to accomplish the following operations.
 - Extract from a composite propagator
 - Inject into a composite propagator
 
-### Create a Composite Propagator
+### Create a Composite Propagator  
 
-Required arguments:
+
+Required arguments:  
 
 - A list of `Propagator`s or a list of `Injector`s and `Extractor`s.
 
@@ -349,7 +350,7 @@ If the `TextMapPropagator`'s `Inject` implementation accepts the optional `Sette
 
 - The `Setter` to set a propagation key/value pair. Propagators MAY invoke it multiple times in order to set multiple pairs.
 
-## Global Propagators
+## Global Propagators  全局传播器
 
 The OpenTelemetry API MUST provide a way to obtain a propagator for each
 supported `Propagator` type. Instrumentation libraries SHOULD call propagators
@@ -357,11 +358,15 @@ to extract and inject the context on all remote calls. Propagators, depending on
 the language, MAY be set up using various dependency injection techniques or
 available as global accessors.
 
+OpenTelemetry API 必须提供一种方法来为每个支持的传播器类型获取传播器。Instrumentation库应该调用传播器来提取和注入所有远程调用的上下文。传播器，取决于语言，可以使用各种依赖注入技术或作为全局访问器来设置。
+
 **Note:** It is a discouraged practice, but certain instrumentation libraries
 might use proprietary context propagation protocols or be hardcoded to use a
 specific one. In such cases, instrumentation libraries MAY choose not to use the
 API-provided propagators and instead hardcode the context extraction and injection
 logic.
+
+这是一种不鼓励的做法，但某些instrumentation库可能使用专有的上下文传播协议或硬编码以使用特定的协议。在这种情况下，检测库可以选择不使用 API 提供的传播器，而是硬编码上下文提取和注入逻辑。
 
 The OpenTelemetry API MUST use no-op propagators unless explicitly configured
 otherwise. Context propagation may be used for various telemetry signals -
@@ -369,11 +374,15 @@ traces, metrics, logging and more. Therefore, context propagation MAY be enabled
 for any of them independently. For instance, a span exporter may be left
 unconfigured, although the trace context propagation was configured to enrich logs or metrics.
 
+除非另有明确配置，否则 OpenTelemetry API 必须使用无操作传播器。上下文传播可用于各种遥测signals - traces, metrics, logging等。因此，可以独立地为它们中的任何一个启用上下文传播。例如，虽然配置了跟踪上下文传播以丰富日志或指标，但可以不配置span导出器。
+
 Platforms such as ASP.NET may pre-configure out-of-the-box
 propagators. If pre-configured, `Propagator`s SHOULD default to a composite
 `Propagator` containing the W3C Trace Context Propagator and the Baggage
 `Propagator` specified in the [Baggage API](../baggage/api.md#propagation).
 These platforms MUST also allow pre-configured propagators to be disabled or overridden.
+
+ASP.NET 等平台可能会预先配置开箱即用的传播器。如果预先配置，传播器应该默认为包含 W3C 跟踪上下文传播器和Baggage API 中指定的行李传播器的Baggage传播器。这些平台还必须允许禁用或覆盖预配置的传播器。
 
 ### Get Global Propagator
 
@@ -396,6 +405,8 @@ Required parameters:
 The official list of propagators that MUST be maintained by the OpenTelemetry
 organization and MUST be distributed as OpenTelemetry extension packages:
 
+必须由 OpenTelemetry 组织维护并且必须作为 OpenTelemetry 扩展包分发的官方传播器列表：
+
 * [W3C TraceContext](https://www.w3.org/TR/trace-context/). MAY alternatively
   be distributed as part of the OpenTelemetry API.
 * [W3C Baggage](https://w3c.github.io/baggage). MAY alternatively
@@ -405,6 +416,8 @@ organization and MUST be distributed as OpenTelemetry extension packages:
 
 This is a list of additional propagators that MAY be maintained and distributed
 as OpenTelemetry extension packages:
+
+这是一个额外的传播器列表，可以作为 OpenTelemetry 扩展包进行维护和分发：
 
 * [OT Trace](https://github.com/opentracing?q=basic&type=&language=). Propagation format
   used by the OpenTracing Basic Tracers. It MUST NOT use `OpenTracing` in the resulting
@@ -421,6 +434,8 @@ map directly to OpenTelemetry such as a debug trace flag, and allowing spans
 from both sides of request to share the same id. To maximize compatibility
 between OpenTelemetry and Zipkin implementations, the following guidelines have
 been established for B3 context propagation.
+
+B3 具有单头和多头编码。它还具有不直接映射到 OpenTelemetry 的语义，例如调试跟踪标志，并允许请求两侧的跨度共享相同的 ID。为了最大限度地提高 OpenTelemetry 和 Zipkin 实现之间的兼容性，已经为 B3 上下文传播建立了以下指南。
 
 #### B3 Extract
 
