@@ -39,7 +39,8 @@ Table of Contents
 
 ## Overview
 
-The Metrics API consists of these main components:
+The Metrics API consists of these main components:  Metrics API 由以下主要组件组成：
+
 
 * [MeterProvider](#meterprovider) is the entry point of the API. It provides
   access to `Meters`.
@@ -49,6 +50,8 @@ The Metrics API consists of these main components:
 
 Here is an example of the object hierarchy inside a process instrumented with
 the metrics API:
+
+以下是使用metrics API 检测的流程内的对象层次结构示例：
 
 ```text
 +-- MeterProvider(default)
@@ -81,15 +84,21 @@ the metrics API:
 In implementations of the API, the `MeterProvider` is expected to be the
 stateful object that holds any configuration.
 
+在 API 的实现中， MeterProvider 应该是保存任何配置的有状态对象。
+
 Normally, the `MeterProvider` is expected to be accessed from a central place.
 Thus, the API SHOULD provide a way to set/register and access a global default
 `MeterProvider`.
+
+通常，MeterProvider 应该从一个中心位置访问。因此，API 应该提供一种设置/注册和访问全局默认 MeterProvider 的方法。
 
 Notwithstanding any global `MeterProvider`, some applications may want to or
 have to use multiple `MeterProvider` instances, e.g. to have different
 configuration for each, or because its easier with dependency injection
 frameworks. Thus, implementations of `MeterProvider` SHOULD allow creating an
 arbitrary number of `MeterProvider` instances.
+
+尽管有任何全局 MeterProvider，但某些应用程序可能想要或必须使用多个 MeterProvider 实例，例如每个都有不同的配置，或者因为依赖注入框架更容易。因此， MeterProvider 的实现应该允许创建任意数量的 MeterProvider 实例。
 
 ### MeterProvider operations
 
@@ -154,12 +163,12 @@ the responsibility of the `MeterProvider` instead.
 
 The `Meter` MUST provide functions to create new [Instruments](#instrument):
 
-* [Create a new Counter](#counter-creation)
-* [Create a new Asynchronous Counter](#asynchronous-counter-creation)
-* [Create a new Histogram](#histogram-creation)
-* [Create a new Asynchronous Gauge](#asynchronous-gauge-creation)
-* [Create a new UpDownCounter](#updowncounter-creation)
-* [Create a new Asynchronous UpDownCounter](#asynchronous-updowncounter-creation)
+* [Create a new Counter](#counter-creation)  创建一个新的计数器
+* [Create a new Asynchronous Counter](#asynchronous-counter-creation)  异步计数器
+* [Create a new Histogram](#histogram-creation)  直方图
+* [Create a new Asynchronous Gauge](#asynchronous-gauge-creation)  异步仪表
+* [Create a new UpDownCounter](#updowncounter-creation)  上下计数器
+* [Create a new Asynchronous UpDownCounter](#asynchronous-updowncounter-creation)  异步上下计数器
 
 Also see the respective sections below for more information on instrument creation.
 
@@ -167,6 +176,8 @@ Also see the respective sections below for more information on instrument creati
 
 Instruments are used to report [Measurements](#measurement). Each Instrument
 will have the following information:
+
+Instruments用于报告Measurements。每个Instrument将具有以下信息：
 
 * The `name` of the Instrument
 * The `kind` of the Instrument - whether it is a [Counter](#counter) or other
@@ -176,17 +187,18 @@ will have the following information:
 
 Instruments are associated with the Meter during creation, and are identified by
 the name:
+Instruments在创建期间与Meter相关联，并由名称标识：
 
 * Meter implementations MUST return an error when multiple Instruments are
-  registered under the same Meter instance using the same name.
+  registered under the same Meter instance using the same name.当在同一个 Meter 实例下使用相同的名称注册多个 Instruments 时，Meter 实现必须返回错误。
 * Different Meters MUST be treated as separate namespaces. The names of the
   Instruments under one Meter SHOULD NOT interfere with Instruments under
-  another Meter.
+  another Meter.不同的 Meter 必须被视为单独的命名空间。一个仪表下的Instruments名称不应干扰另一个Meter下的Instruments。
 
 <a name="instrument-naming-rule"></a>
 
 Instrument names MUST conform to the following syntax (described using the
-[Augmented Backus-Naur Form](https://tools.ietf.org/html/rfc5234)):
+[Augmented Backus-Naur Form](https://tools.ietf.org/html/rfc5234)):  名称必须符合以下语法（使用增强的巴科斯-诺尔形式描述）
 
 ```abnf
 instrument-name = ALPHA 0*62 ("_" / "." / "-" / ALPHA / DIGIT)
@@ -208,6 +220,8 @@ The `unit` is an optional string provided by the author of the instrument. It
 SHOULD be treated as an opaque string from the API and SDK (e.g. the SDK is not
 expected to validate the unit of measurement, or perform the unit conversion).
 
+`unit` 是instrument作者提供的可选字符串。它应该被视为来自 API 和 SDK 的不透明字符串（例如，SDK 不应验证测量单位或执行单位转换）。
+
 * If the `unit` is not provided or the `unit` is null, the API and SDK MUST make
   sure that the behavior is the same as an empty `unit` string.
 * It MUST be case-sensitive (e.g. `kb` and `kB` are different units), ASCII
@@ -222,6 +236,8 @@ expected to validate the unit of measurement, or perform the unit conversion).
 The `description` is an optional free-form text provided by the author of the
 instrument. It MUST be treated as an opaque string from the API and SDK.
 
+描述是工具作者提供的可选的自由格式文本。它必须被视为来自 API 和 SDK 的不透明字符串。
+
 * If the `description` is not provided or the `description` is null, the API and
   SDK MUST make sure that the behavior is the same as an empty `description`
   string.
@@ -234,7 +250,7 @@ instrument. It MUST be treated as an opaque string from the API and SDK.
   API](../overview.md#api) authors MAY decide if they want to support more.
 
 Instruments can be categorized based on whether they are synchronous or
-asynchronous:
+asynchronous:  可以根据它们是同步还是异步来分类
 
 <a name="synchronous-instrument"></a>
 
@@ -262,6 +278,7 @@ pattern](https://en.wikipedia.org/wiki/Asynchronous_method_invocation).
 
 `Counter` is a [synchronous Instrument](#synchronous-instrument) which supports
 non-negative increments.
+数器是一种支持非负增量的同步工具。
 
 Example uses for `Counter`:
 
@@ -278,6 +295,8 @@ There MUST NOT be any API for creating a `Counter` other than with a
 desired, [OpenTelemetry API](../overview.md#api) authors MAY decide the language
 idiomatic name(s), for example `CreateUInt64Counter`, `CreateDoubleCounter`,
 `CreateCounter<UInt64>`, `CreateCounter<double>`.
+
+除了使用 Meter 之外，不得有任何用于创建 Counter 的 API。这可以称为 CreateCounter。如果需要强类型，OpenTelemetry API 作者可以决定语言惯用名称，例如 CreateUInt64Counter、CreateDoubleCounter、CreateCounter、CreateCounter。
 
 The API MUST accept the following parameters:
 
