@@ -43,31 +43,40 @@ Table of Contents
 
 The Tracing API consist of these main classes:
 
-- [`TracerProvider`](#tracerprovider) is the entry point of the API.
-  It provides access to `Tracer`s.
-- [`Tracer`](#tracer) is the class responsible for creating `Span`s.
-- [`Span`](#span) is the API to trace an operation.
+- [`TracerProvider`](#tracerprovider) is the entry point of the API.  
+  It provides access to `Tracer`s.  TracerProvider 是 API 的入口点。它提供了对 Tracer 的访问。
+- [`Tracer`](#tracer) is the class responsible for creating `Span`s.  Tracer 是负责创建 Span 的类。
+- [`Span`](#span) is the API to trace an operation. Span 是用于跟踪操作的 API。
 
 ## Data types
 
 While languages and platforms have different ways of representing data,
 this section defines some generic requirements for this API.
 
+虽然语言和平台具有不同的数据表示方式，但本节定义了此 API 的一些通用要求。
+
 ### Time
 
 OpenTelemetry can operate on time values up to nanosecond (ns) precision.
 The representation of those values is language specific.
 
+OpenTelemetry 可以对高达纳秒 (ns) 精度的时间值进行操作。这些值的表示是特定于语言的。
+
 #### Timestamp
 
 A timestamp is the time elapsed since the Unix epoch.
 
-* The minimal precision is milliseconds.
-* The maximal precision is nanoseconds.
+使用unix时间戳
+
+* The minimal precision is milliseconds.  最小精度为毫秒。
+* The maximal precision is nanoseconds.  最大精度为纳秒。
+
 
 #### Duration
 
 A duration is the elapsed time between two events.
+
+持续时间是两个事件之间经过的时间。
 
 * The minimal precision is milliseconds.
 * The maximal precision is nanoseconds.
@@ -79,9 +88,14 @@ A duration is the elapsed time between two events.
 In implementations of the API, the `TracerProvider` is expected to be the
 stateful object that holds any configuration.
 
+在 API 的实现中，TracerProvider 应该是保存任何配置的有状态对象。
+
+
 Normally, the `TracerProvider` is expected to be accessed from a central place.
 Thus, the API SHOULD provide a way to set/register and access
 a global default `TracerProvider`.
+
+通常， TracerProvider 应该从一个中心位置访问。因此，API 应该提供一种设置/注册和访问全局默认 TracerProvider 的方法。
 
 Notwithstanding any global `TracerProvider`, some applications may want to or
 have to use multiple `TracerProvider` instances,
@@ -91,15 +105,23 @@ or because its easier with dependency injection frameworks.
 Thus, implementations of `TracerProvider` SHOULD allow creating an arbitrary
 number of `TracerProvider` instances.
 
+尽管有任何全局 TracerProvider，一些应用程序可能想要或必须使用多个 TracerProvider 实例，例如为每个（以及从它们获得的跟踪器）有不同的配置（如 SpanProcessors），或者因为依赖注入框架更容易。因此， TracerProvider 的实现应该允许创建任意数量的 TracerProvider 实例。
+
+
 ### TracerProvider operations
 
 The `TracerProvider` MUST provide the following functions:
 
 - Get a `Tracer`
 
+TracerProvider 必须提供获取Tracer的方法
+
 #### Get a Tracer
 
 This API MUST accept the following parameters:
+
+此 API 必须接受以下参数：
+
 
 - `name` (required): This name must identify the [instrumentation library](../overview.md#instrumentation-libraries)
   (e.g. `io.opentelemetry.contrib.mongodb`).
@@ -124,10 +146,15 @@ This API MUST accept the following parameters:
 It is unspecified whether or under which conditions the same or different
 `Tracer` instances are returned from this functions.
 
+未指定是否或在何种条件下从此函数返回相同或不同的 Tracer 实例。
+
+
 Implementations MUST NOT require users to repeatedly obtain a `Tracer` again
 with the same name+version+schema_url to pick up configuration changes.
 This can be achieved either by allowing to work with an outdated configuration or
 by ensuring that new configuration applies also to previously returned `Tracer`s.
+
+实现不得要求用户重复获取具有相同名称+版本+schema_url 的 Tracer 以获取配置更改。这可以通过允许使用过时的配置或通过确保新配置也适用于以前返回的 Tracer 来实现。
 
 Note: This could, for example, be implemented by storing any mutable
 configuration in the `TracerProvider` and having `Tracer` implementation objects
@@ -137,10 +164,14 @@ the tracer could, for example, do a look-up with its name+version+schema_url in
 a map in the `TracerProvider`, or the `TracerProvider` could maintain a registry
 of all returned `Tracer`s and actively update their configuration if it changes.
 
+注意：例如，这可以通过在 TracerProvider 中存储任何可变配置并让 Tracer 实现对象具有对从中获取它们的 TracerProvider 的引用来实现。如果必须按跟踪器存储配置（例如禁用某个跟踪器），例如，跟踪器可以在 TracerProvider 的映射中使用其名称+版本+schema_url 进行查找，或者 TracerProvider 可以维护注册表所有返回的 Tracer 并在其配置发生变化时主动更新其配置。
+
 The effect of associating a Schema URL with a `Tracer` MUST be that the
 telemetry emitted using the `Tracer` will be associated with the Schema URL,
 provided that the emitted data format is capable of representing such
 association.
+
+将 Schema URL 与 Tracer 相关联的效果必须是使用 Tracer 发出的遥测数据将与 Schema URL 相关联，前提是发出的数据格式能够表示这种关联。
 
 ## Context Interaction
 
@@ -156,23 +187,35 @@ instance:
 The functionality listed above is necessary because API users SHOULD NOT have
 access to the [Context Key](../context/context.md#create-a-key) used by the Tracing API implementation.
 
+上面列出的功能是必要的，因为 API 用户不应该访问Tracing API 实现使用的 上下文key
+
 If the language has support for implicitly propagated `Context` (see
 [here](../context/context.md#optional-global-operations)), the API SHOULD also provide
 the following functionality:
 
+如果该语言支持隐式传播的上下文（参见此处），则 API 还应提供以下功能：
+
 - Get the currently active span from the implicit context. This is equivalent to getting the implicit context, then extracting the `Span` from the context.
+- 从隐式上下文中获取当前active span。这相当于获取隐式上下文，然后从上下文中提取 Span。
 - Set the currently active span to the implicit context. This is equivalent to getting the implicit context, then inserting the `Span` to the context.
+- 将当前active span设置为隐式上下文。这相当于获取隐式上下文，然后将 Span 插入上下文。
 
 All the above functionalities operate solely on the context API, and they MAY be
 exposed as either static methods on the trace module, or as static methods on a class
 inside the trace module. This functionality SHOULD be fully implemented in the API when possible.
 
+所有上述功能都仅在上下文 API 上运行，它们可以作为trace模块上的静态方法或作为trace模块内类上的静态方法公开。如果可能，此功能应在 API 中完全实现。
+
 ## Tracer
 
-The tracer is responsible for creating `Span`s.
+The tracer is responsible for creating `Span`s.     
+
+tracer 负责创建 Span。
 
 Note that `Tracer`s should usually *not* be responsible for configuration.
 This should be the responsibility of the `TracerProvider` instead.
+
+请注意，Tracer 通常不应该负责配置。这应该是 TracerProvider 的责任。
 
 ### Tracer operations
 
@@ -180,25 +223,37 @@ The `Tracer` MUST provide functions to:
 
 - [Create a new `Span`](#span-creation) (see the section on `Span`)
 
+Tracer 必须提供Create a new Span 方法
+
 ## SpanContext
 
 A `SpanContext` represents the portion of a `Span` which must be serialized and
 propagated along side of a distributed context. `SpanContext`s are immutable.
+
+SpanContext 表示 Span 的一部分，必须在分布式上下文的一侧进行序列化和传播。 SpanContext 是不可变的。
 
 The OpenTelemetry `SpanContext` representation conforms to the [W3C TraceContext
 specification](https://www.w3.org/TR/trace-context/). It contains two
 identifiers - a `TraceId` and a `SpanId` - along with a set of common
 `TraceFlags` and system-specific `TraceState` values.
 
+OpenTelemetry SpanContext 表示符合 W3C TraceContext 规范。它包含两个标识符 - TraceId 和 SpanId - 以及一组常见的 TraceFlags 和系统特定的 TraceState 值。
+
 `TraceId` A valid trace identifier is a 16-byte array with at least one
 non-zero byte.
+
+ 一个 16 字节的数组，其中至少有一个非零字节。
 
 `SpanId` A valid span identifier is an 8-byte array with at least one non-zero
 byte.
 
+一个 8 字节数组，其中至少有一个非零字节。
+
 `TraceFlags` contain details about the trace. Unlike TraceState values,
 TraceFlags are present in all traces. The current version of the specification
 only supports a single flag called [sampled](https://www.w3.org/TR/trace-context/#sampled-flag).
+
+traceFlags 包含有关跟踪的详细信息。与 TraceState 值不同，TraceFlags 存在于所有跟踪中。该规范的当前版本仅支持一个名为 sampled 的标志。
 
 `TraceState` carries vendor-specific trace identification data, represented as a list
 of key-value pairs. TraceState allows multiple tracing
@@ -207,26 +262,39 @@ specification](https://www.w3.org/TR/trace-context/#tracestate-header). For
 specific OTel values in `TraceState`, see the [TraceState Handling](tracestate-handling.md)
 document.
 
+TraceState 携带特定于供应商的跟踪标识数据，表示为键值对列表。 TraceState 允许多个跟踪系统参与同一个跟踪。它在 W3C 跟踪上下文规范中有完整的描述。有关 TraceState 中的特定 OTel 值，请参阅 TraceState 处理文档。
+
 The API MUST implement methods to create a `SpanContext`. These methods SHOULD be the only way to
 create a `SpanContext`. This functionality MUST be fully implemented in the API, and SHOULD NOT be
 overridable.
 
-### Retrieving the TraceId and SpanId
+API 必须实现创建 SpanContext 的方法。这些方法应该是创建 SpanContext 的唯一方法。此功能必须在 API 中完全实现，并且不应被覆盖。
+
+### Retrieving the TraceId and SpanId   获取 TraceId 和 SpanId
+
 
 The API MUST allow retrieving the `TraceId` and `SpanId` in the following forms:
+
+API 必须允许以下列形式获取 TraceId 和 SpanId：
 
 * Hex - returns the lowercase [hex encoded](https://tools.ietf.org/html/rfc4648#section-8)
 `TraceId` (result MUST be a 32-hex-character lowercase string) or `SpanId`
 (result MUST be a 16-hex-character lowercase string).
+Hex - 返回小写十六进制编码的 TraceId（结果必须是 32 个十六进制字符的小写字符串）或 SpanId（结果必须是一个 16 个十六进制字符的小写字符串）。
 * Binary - returns the binary representation of the `TraceId` (result MUST be a
 16-byte array) or `SpanId` (result MUST be an 8-byte array).
+二进制 - 返回 TraceId（结果必须是 16 字节数组）或 SpanId（结果必须是 8 字节数组）的二进制表示。
 
 The API SHOULD NOT expose details about how they are internally stored.
+
+API 不应公开有关它们如何在内部存储的详细信息。
 
 ### IsValid
 
 An API called `IsValid`, that returns a boolean value, which is `true` if the SpanContext has a
 non-zero TraceID and a non-zero SpanID, MUST be provided.
+
+必须提供一个名为 IsValid 的 API，它返回一个布尔值，如果 SpanContext 具有非零 TraceID 和非零 SpanID，则该值为真。
 
 ### IsRemote
 
@@ -235,11 +303,15 @@ propagated from a remote parent, MUST be provided.
 When extracting a `SpanContext` through the [Propagators API](../context/api-propagators.md#propagators-api),
 `IsRemote` MUST return true, whereas for the SpanContext of any child spans it MUST return false.
 
+必须提供一个名为 IsRemote 的 API，它返回一个布尔值，如果 SpanContext 是从远程父级传播的，则该值为 true。当通过 Propagators API 提取 SpanContext 时，IsRemote 必须返回 true，而对于任何子 span 的 SpanContext，它必须返回 false。
+
 ### TraceState
 
 `TraceState` is a part of [`SpanContext`](./api.md#spancontext), represented by an immutable list of string key/value pairs and
 formally defined by the [W3C Trace Context specification](https://www.w3.org/TR/trace-context/#tracestate-header).
 Tracing API MUST provide at least the following operations on `TraceState`:
+
+TraceState 是 SpanContext 的一部分，由字符串键/值对的不可变列表表示，并由 W3C Trace Context 规范正式定义。 Tracing API 必须至少提供以下对 TraceState 的操作：
 
 * Get value for a given key
 * Add a new key/value pair
@@ -253,11 +325,15 @@ Every mutating operations MUST validate input parameters.
 If invalid value is passed the operation MUST NOT return `TraceState` containing invalid data
 and MUST follow the [general error handling guidelines](../error-handling.md).
 
+这些操作必须遵循 W3C 跟踪上下文规范中描述的规则。所有变异操作都必须返回一个新的 TraceState 并应用了修改。根据 W3C 跟踪上下文规范中指定的规则，TraceState 必须始终有效。每个变异操作都必须验证输入参数。如果传递了无效值，则操作不得返回包含无效数据的 TraceState，并且必须遵循一般错误处理指南。
+
 Please note, since `SpanContext` is immutable, it is not possible to update `SpanContext` with a new `TraceState`.
 Such changes then make sense only right before
 [`SpanContext` propagation](../context/api-propagators.md)
 or [telemetry data exporting](sdk.md#span-exporter).
 In both cases, `Propagator`s and `SpanExporter`s may create a modified `TraceState` copy before serializing it to the wire.
+
+请注意，由于 SpanContext 是不可变的，因此无法使用新的 TraceState 更新 SpanContext。此类更改仅在 SpanContext 传播或遥测数据导出之前才有意义。在这两种情况下，Propagators 和 SpanExporters 可能会在将其序列化到线路之前创建修改后的 TraceState 副本。
 
 ## Span
 
@@ -265,8 +341,10 @@ A `Span` represents a single operation within a trace. Spans can be nested to
 form a trace tree. Each trace contains a root span, which typically describes
 the entire operation and, optionally, one or more sub-spans for its sub-operations.
 
+`Span`表示跟踪中的单个操作。`Span`可以嵌套以形成跟踪树。每个trace包含一个根Span，它通常描述整个操作，并且可选地描述其子操作的一个或多个子Span。
+
 <a name="span-data-members"></a>
-`Span`s encapsulate:
+`Span`s encapsulate:  封装
 
 - The span name
 - An immutable [`SpanContext`](#spancontext) that uniquely identifies the
@@ -291,6 +369,8 @@ That is, "get_user" is a reasonable name, while "get_user/314159",
 where "314159" is a user ID, is not a good name due to its high cardinality.
 Generality SHOULD be prioritized over human-readability.
 
+Span 名称简洁地标识了 Span 所代表的工作，例如，RPC 方法名称、函数名称或较大计算中的子任务或阶段的名称。span名称应该是最通用的字符串，用于标识（统计上） 有趣的？ Span类，而不是单个 Span实例，同时仍然是人类可读的。也就是说，“get_user”是一个合理的名字，而“get_user/314159”，其中“314159”是一个用户ID，由于基数高？，不是一个好名字。普遍性应该优先于人类可读性。
+
 For example, here are potential span names for an endpoint that gets a
 hypothetical account information:
 
@@ -304,10 +384,14 @@ hypothetical account information:
 The `Span`'s start and end timestamps reflect the elapsed real time of the
 operation.
 
+Span 的开始和结束时间戳反映了操作经过的实时时间。
+
 For example, if a span represents a request-response cycle (e.g. HTTP or an RPC),
 the span should have a start time that corresponds to the start time of the
 first sub-operation, and an end time of when the final sub-operation is complete.
 This includes:
+
+例如，如果一个span代表一个请求-响应周期（例如HTTP或RPC），那么span应该有一个开始时间对应于第一个子操作的开始时间，以及一个结束时间为最后一个子操作的结束时间。操作完成。这包括：
 
 - receiving the data from the request
 - parsing of the data (e.g. from a binary or json format)
@@ -321,27 +405,39 @@ sub-operations which require more detailed observability. Child spans should
 measure the timing of the respective sub-operation, and may add additional
 attributes.
 
+可以创建子spans（或在某些情况下事件）来表示需要更详细可观察性的子操作。子spans应该测量相应子操作的时间，并且可以添加附加属性。
+
 A `Span`'s start time SHOULD be set to the current time on [span
 creation](#span-creation). After the `Span` is created, it SHOULD be possible to
 change its name, set its `Attribute`s, add `Event`s, and set the `Status`. These
 MUST NOT be changed after the `Span`'s end time has been set.
 
+Span的开始时间应该设置为Span创建的当前时间。创建 Span 后，应该可以更改其名称、设置其属性、添加事件和设置状态。在设置 Span 的结束时间后，不得更改这些内容。
+
 `Span`s are not meant to be used to propagate information within a process. To
 prevent misuse, implementations SHOULD NOT provide access to a `Span`'s
 attributes besides its `SpanContext`.
+
+`Span`并不意味着用于在流程中传播信息。为防止误用，实现不应提供对除 SpanContext 之外的 Span 属性的访问。
 
 Vendors may implement the `Span` interface to effect vendor-specific logic.
 However, alternative implementations MUST NOT allow callers to create `Span`s
 directly. All `Span`s MUST be created via a `Tracer`.
 
+供应商可以实现 Span 接口来影响供应商特定的逻辑。但是，替代实现不得允许调用者直接创建 Span。所有 Span 都必须通过 Tracer 创建。
+
 ### Span Creation
 
 There MUST NOT be any API for creating a `Span` other than with a [`Tracer`](#tracer).
+
+除了 Tracer 之外，不得有任何用于创建 Span 的 API。
 
 In languages with implicit `Context` propagation, `Span` creation MUST NOT
 set the newly created `Span` as the active `Span` in the
 [current `Context`](#context-interaction) by default, but this functionality
 MAY be offered additionally as a separate operation.
+
+在具有隐式上下文传播的语言中，默认情况下，Span创建不得将新创建的跨度设置为当前上下文中的活动跨度，但此功能可以作为单独的操作另外提供。
 
 The API MUST accept the following parameters:
 
@@ -353,6 +449,9 @@ The API MUST accept the following parameters:
 
   The semantic parent of the Span MUST be determined according to the rules
   described in [Determining the Parent Span from a Context](#determining-the-parent-span-from-a-context).
+  
+  Span 的语义父级必须根据从上下文确定父级 Span 中描述的规则来确定。
+  
 - [`SpanKind`](#spankind), default to `SpanKind.Internal` if not specified.
 - [`Attributes`](../common/common.md#attributes). Additionally,
   these attributes may be used to make a sampling decision as noted in [sampling
@@ -361,6 +460,8 @@ The API MUST accept the following parameters:
 
   Whenever possible, users SHOULD set any already known attributes at span creation
   instead of calling `SetAttribute` later.
+  
+  只要有可能，用户应该在创建跨度时设置任何已知的属性，而不是稍后调用 SetAttribute。
 
 - `Link`s - an ordered sequence of Links, see API definition [here](#specifying-links).
 - `Start timestamp`, default to current time. This argument SHOULD only be set
@@ -376,10 +477,14 @@ a root span, and MUST generate a new `TraceId` for each root span created.
 For a Span with a parent, the `TraceId` MUST be the same as the parent.
 Also, the child span MUST inherit all `TraceState` values of its parent by default.
 
+每个span都有零个或一个父span以及零个或多个子span，它们表示因果相关的操作。相关span的树包括跟踪。如果span没有父span，则称其为根span。每个跟踪包含一个根span，它是跟踪中所有其他span的共享祖先。实现必须提供一个选项来创建一个 Span 作为根span，并且必须为每个创建的根span生成一个新的 TraceId。对于具有父级的 Span，TraceId 必须与父级相同。此外，默认情况下，子span必须继承其父span的所有 TraceState 值。
+
 A `Span` is said to have a _remote parent_ if it is the child of a `Span`
 created in another process. Each propagators' deserialization must set
 `IsRemote` to true on a parent `SpanContext` so `Span` creation knows if the
 parent is remote.
+
+如果 Span 是在另一个进程中创建的 Span 的子项，则称该 Span 具有远程父项。每个传播器的反序列化必须在父 SpanContext 上将 IsRemote 设置为 true，以便 Span 创建知道父对象是否是远程的。
 
 Any span that is created MUST also be ended.
 This is the responsibility of the user.
@@ -387,15 +492,21 @@ API implementations MAY leak memory or other resources
 (including, for example, CPU time for periodic work that iterates all spans)
 if the user forgot to end the span.
 
+创建的任何span也必须结束。这是用户的责任。如果用户忘记结束跨度，API 实现可能会泄漏内存或其他资源（包括，例如，迭代所有跨度的周期性工作的 CPU 时间）。
+
 #### Determining the Parent Span from a Context
 
 When a new `Span` is created from a `Context`, the `Context` may contain a `Span`
 representing the currently active instance, and will be used as parent.
 If there is no `Span` in the `Context`, the newly created `Span` will be a root span.
 
+当从上下文创建新的 Span 时，上下文可能包含一个表示当前活动实例的 Span，并将用作父级。如果上下文中没有 Span，则新创建的 Span 将是根 Span。
+
 A `SpanContext` cannot be set as active in a `Context` directly, but by
 [wrapping it into a Span](#wrapping-a-spancontext-in-a-span).
 For example, a `Propagator` performing context extraction may need this.
+
+SpanContext 不能直接在 Context 中设置为 active，而是通过将其包装到 Span 中。例如，执行上下文提取的传播器可能需要这个。
 
 #### Specifying links
 
@@ -403,6 +514,8 @@ During the `Span` creation user MUST have the ability to record links to other
 `Span`s. Linked `Span`s can be from the same or a different trace. See [Links
 description](../overview.md#links-between-spans). `Link`s cannot be added after
 Span creation.
+
+在创建 Span 期间，用户必须能够记录到其他 Span 的链接。链接的 Span 可以来自相同或不同的跟踪。请参阅链接说明。创建 Span 后无法添加链接。
 
 A `Link` is structurally defined by the following properties:
 
