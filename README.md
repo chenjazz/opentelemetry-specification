@@ -32,7 +32,7 @@ Technical committee holds regular meetings, notes are held
 
 - [Overview](specification/overview.md) 总览
 - [Glossary](specification/glossary.md)  词汇表
-- [Versioning and stability for OpenTelemetry clients](specification/versioning-and-stability.md)
+- [Versioning and stability for OpenTelemetry clients](specification/versioning-and-stability.md) OpenTelemetry 客户端的版本控制和稳定性
 - [Library Guidelines](specification/library-guidelines.md) 库准则
   - [Package/Library Layout](specification/library-layout.md)
   - [General error handling guidelines](specification/error-handling.md)
