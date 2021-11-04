@@ -33,20 +33,31 @@
 
 This document defines the stability guarantees offered by the OpenTelemetry clients, along with the rules and procedures for meeting those guarantees.
 
+本文档定义了 OpenTelemetry 客户端提供的稳定性保证，以及满足这些保证的规则和程序。
+
 In this document, the terms "OpenTelemetry" and "language implementations" both specifically refer to the OpenTelemetry clients.
 These terms do not refer to the specification or the Collector in this document.
+
+在本文档中，术语“OpenTelemetry”和“语言实现”都特指 OpenTelemetry 客户端。这些术语不涉及本文档中的规范或Collector。
 
 Each language implementation MUST take these versioning and stability requirements, and produce a language-specific document which details how these requirements will be met.
 This document SHALL be placed in the root of each repo and named `VERSIONING`.
 
-## Design goals
+每种语言实现都必须采用这些版本控制和稳定性要求，并生成特定于语言的文档，详细说明如何满足这些要求。该文档应放置在每个 repo 的根目录中，并命名为 VERSIONING。
+
+## Design goals  设计目标
+
 
 Versioning and stability procedures are designed to meet the following goals.
+
+版本控制和稳定性程序旨在满足以下目标。
 
 **Ensure that application owners stay up to date with the latest release of the SDK.**
 We want all users to stay up to date with the latest version of the OpenTelemetry SDK.
 We do not want to create hard breaks in support, of any kind, which leave users stranded on older versions.
 It MUST always be possible to upgrade to the latest minor version of the OpenTelemetry SDK, without creating compilation or runtime errors.
+
+**确保应用程序所有者与 SDK 的最新版本保持同步。** 我们希望所有用户都了解最新版本的 OpenTelemetry SDK。我们不希望在支持方面造成任何形式的硬中断，从而使用户陷入旧版本的困境。必须始终可以升级到 OpenTelemetry SDK 的最新次要版本，而不会产生编译或运行时错误。
 
 **Never create a dependency conflict between packages which rely on different versions of OpenTelemetry. Avoid breaking all stable public APIs.**
 Backwards compatibility is a strict requirement.
@@ -56,16 +67,25 @@ Transitive dependencies of the API cannot create a version conflict. The OpenTel
 A library that imports the OpenTelemetry API should never become incompatible with other libraries due to a version conflict in one of OpenTelemetry's dependencies.
 Theoretically, APIs can be deprecated and eventually removed, but this is a process measured in years and we have no plans to do so.
 
+永远不要在依赖于不同版本的 OpenTelemetry 的包之间创建依赖冲突。  避免破坏所有稳定的公共 API。向后兼容性是一项严格的要求。Instrumentation API 永远不会产生版本冲突。否则，OpenTelemetry API 无法嵌入到广泛共享的库中，例如 Web 框架。针对旧版本 API 编写的代码必须适用于所有较新版本的 API。 API 的传递依赖项不会造成版本冲突。如果任何库或应用程序可能需要该包的不同的、不兼容的版本，则 OpenTelemetry API 不能依赖于特定的包。由于 OpenTelemetry 依赖项之一的版本冲突，导入 OpenTelemetry API 的库永远不应该与其他库不兼容。理论上，API 可以被弃用并最终被删除，但这是一个以年为单位的过程，我们没有这样做的计划。
+
 **Allow for multiple levels of package stability within the same release of an OpenTelemetry component.**
 Provide maintainers a clear process for developing new, experimental [signals](glossary.md#signals) alongside stable signals.
 Different packages within the same release may have different levels of stability.
 This means that an implementation wishing to release stable tracing today MUST ensure that experimental metrics are factored out in such a way that breaking changes to metrics API do not destabilize the trace API packages.
 
-## Signal lifecycle
+允许在 OpenTelemetry 组件的同一版本中实现多个级别的包稳定性。为维护者提供一个清晰的过程，以便在稳定signal的同时开发新的实验性signal。同一发行版中的不同软件包可能具有不同的稳定性级别。这意味着希望今天发布稳定跟踪的实现必须确保以这样一种方式排除实验性指标，即metrics API 的重大更改不会破坏 trace API 包的稳定性。
+
+## Signal lifecycle 生命周期
 
 The development of each signal follows a lifecycle: experimental, stable, deprecated, removed.
 
+每个signal的发展遵循一个生命周期  experimental, stable, deprecated, removed.
+
+
 The infographic below shows an example of the lifecycle of an API component.
+
+下面的信息图显示了 API 组件的生命周期示例。
 
 ![API Lifecycle](../internal/img/api-lifecycle.png)
 
