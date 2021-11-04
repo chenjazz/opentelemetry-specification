@@ -517,13 +517,13 @@ Span creation.
 
 在创建 Span 期间，用户必须能够记录到其他 Span 的链接。链接的 Span 可以来自相同或不同的跟踪。请参阅链接说明。创建 Span 后无法添加链接。
 
-A `Link` is structurally defined by the following properties:
+A `Link` is structurally defined by the following properties: Link 在结构上由以下属性定义：
 
 - `SpanContext` of the `Span` to link to.
 - Zero or more [`Attributes`](../common/common.md#attributes) further describing
   the link.
 
-The Span creation API MUST provide:
+The Span creation API MUST provide:  Span 创建 API 必须提供：
 
 - An API to record a single `Link` where the `Link` properties are passed as
   arguments. This MAY be called `AddLink`. This API takes the `SpanContext` of
@@ -531,13 +531,17 @@ The Span creation API MUST provide:
   parameters or as an immutable object encapsulating them, whichever is most
   appropriate for the language. Implementations MAY ignore links with an
   [invalid](#isvalid) `SpanContext`.
+  
+  用于记录单个链接的 API，其中链接属性作为参数传递。这可以称为 AddLink。此 API 将 Span 的 SpanContext 链接到可选属性，作为单独的参数或作为封装它们的不可变对象，以最适合该语言的方式为准。实现可以忽略具有无效 SpanContext 的链接。
 
-Links SHOULD preserve the order in which they're set.
+Links SHOULD preserve the order in which they're set.  链接应该保留它们设置的顺序。
 
 ### Span operations
 
 With the exception of the function to retrieve the `Span`'s `SpanContext` and
 recording status, none of the below may be called after the `Span` is finished.
+
+除了检索 Span 的 SpanContext 和录制状态的函数外，在 Span 完成后不能调用以下任何一个。
 
 #### Get Context
 
@@ -546,6 +550,8 @@ The Span interface MUST provide:
 - An API that returns the `SpanContext` for the given `Span`. The returned value
   may be used even after the `Span` is finished. The returned value MUST be the
   same for the entire Span lifetime. This MAY be called `GetContext`.
+  
+  返回给定 Span 的 SpanContext 的 API。即使在 Span 完成后，也可以使用返回的值。整个 Span 生命周期的返回值必须相同。这可以称为 GetContext。
 
 #### IsRecording
 
@@ -553,10 +559,14 @@ Returns true if this `Span` is recording information like events with the
 `AddEvent` operation, attributes using `SetAttributes`, status with `SetStatus`,
 etc.
 
+如果此 Span 正在使用 AddEvent 操作记录事件、使用 SetAttributes 的属性、使用 SetStatus 的状态等信息，则返回 true。
+
 After a `Span` is ended, it usually becomes non-recording and thus
 `IsRecording` SHOULD consequently return false for ended Spans.
 Note: Streaming implementations, where it is not known if a span is ended,
 are one expected case where `IsRecording` cannot change after ending a Span.
+
+在 Span 结束后，它通常会变为非记录状态，因此 IsRecording 应该因此为结束的 Span 返回 false。注意：流实现，其中不知道跨度是否结束，是一种预期情况，即在结束跨度后 IsRecording 无法更改。
 
 `IsRecording` SHOULD NOT take any parameters.
 
@@ -566,6 +576,8 @@ span's recording is determined independently from the value of this flag
 (typically based on the `sampled` flag of a `TraceFlags` on
 [SpanContext](#spancontext)).
 
+这个标志应该用于在一个 Span 绝对没有被记录的情况下避免对 Span 属性或事件进行昂贵的计算。请注意，任何子跨度的记录都是独立于该标志的值确定的（通常基于 SpanContext 上 TraceFlags 的采样标志）。
+
 This flag may be `true` despite the entire trace being sampled out. This
 allows to record and process information about the individual Span without
 sending it to the backend. An example of this scenario may be recording and
@@ -573,9 +585,13 @@ processing of all incoming requests for the processing and building of
 SLA/SLO latency charts while sending only a subset - sampled spans - to the
 backend. See also the [sampling section of SDK design](sdk.md#sampling).
 
+尽管采样了整个跟踪，但该标志可能为真。这允许记录和处理有关单个 Span 的信息，而无需将其发送到后端。此场景的一个示例可能是记录和处理所有传入请求以处理和构建 SLA/SLO 延迟图表，同时仅向后端发送一个子集（采样跨度）。另请参阅 SDK 设计的采样部分。
+
 Users of the API should only access the `IsRecording` property when
 instrumenting code and never access `SampledFlag` unless used in context
 propagators.
+
+API 的用户应该只在检测代码时访问 IsRecording 属性，除非在上下文传播器中使用，否则永远不要访问 SampledFlag。
 
 #### Set Attributes
 
@@ -595,6 +611,8 @@ The Span interface MAY provide:
 Setting an attribute with the same key as an existing attribute SHOULD overwrite
 the existing attribute's value.
 
+请注意，OpenTelemetry 项目记录了某些具有规定语义含义的“标准属性”
+
 Note that the OpenTelemetry project documents certain ["standard
 attributes"](semantic_conventions/README.md) that have prescribed semantic meanings.
 
@@ -602,10 +620,14 @@ Note that [Samplers](sdk.md#sampler) can only consider information already
 present during span creation. Any changes done later, including new or changed
 attributes, cannot change their decisions.
 
+请注意，采样器只能考虑跨度创建期间已经存在的信息。以后所做的任何更改，包括新的或更改的属性，都不能改变他们的决定。
+
 #### Add Events
 
 A `Span` MUST have the ability to add events. Events have a time associated
 with the moment when they are added to the `Span`.
+
+Span 必须能够添加事件。事件有一个与它们被添加到 Span 的时刻相关联的时间。
 
 An `Event` is structurally defined by the following properties:
 
@@ -629,6 +651,9 @@ The Span interface MUST provide:
 Events SHOULD preserve the order in which they are recorded.
 This will typically match the ordering of the events' timestamps,
 but events may be recorded out-of-order using custom timestamps.
+
+事件应该保持它们被记录的顺序。这通常与事件时间戳的顺序相匹配，但可以使用自定义时间戳无序记录事件。
+
 
 Consumers should be aware that an event's timestamp might be before the start or
 after the end of the span if custom timestamps were provided by the user for the
@@ -797,6 +822,8 @@ The API MUST provide an operation for wrapping a `SpanContext` with an object
 implementing the `Span` interface. This is done in order to expose a `SpanContext`
 as a `Span` in operations such as in-process `Span` propagation.
 
+API 必须提供一个操作，用于用实现 Span 接口的对象包装 SpanContext。这样做是为了在诸如进程内 Span 传播之类的操作中将 SpanContext 公开为 Span。
+
 If a new type is required for supporting this operation, it SHOULD NOT be exposed
 publicly if possible (e.g. by only exposing a function that returns something
 with the Span interface type). If a new type is required to be publicly exposed,
@@ -820,6 +847,8 @@ This functionality MUST be fully implemented in the API, and SHOULD NOT be overr
 and its children in a Trace.  `SpanKind` describes two independent
 properties that benefit tracing systems during analysis.
 
+SpanKind 在 Trace 中描述了 Span、它的父母和它的孩子之间的关系。 SpanKind 描述了在分析过程中有益于跟踪系统的两个独立属性。
+
 The first property described by `SpanKind` reflects whether the Span
 is a "logical" remote child or parent. By "logical", we mean that
 the span is logically a remote child or parent, from the point of view
@@ -828,12 +857,16 @@ interesting because they are sources of external load.  Spans with a
 remote child are interesting because they reflect a non-local system
 dependency.
 
+SpanKind 描述的第一个属性反映了 Span 是“逻辑”远程子项还是父项。 “逻辑”是指从被检测的库的角度来看，跨度在逻辑上是远程子项或父项。具有远程父级的 Span 很有趣，因为它们是外部负载的来源。带有远程子节点的 Span 很有趣，因为它们反映了非本地系统依赖性。
+
 The second property described by `SpanKind` reflects whether a child
 Span represents a synchronous call.  When a child span is synchronous,
 the parent is expected to wait for it to complete under ordinary
 circumstances.  It can be useful for tracing systems to know this
 property, since synchronous Spans may contribute to the overall trace
 latency. Asynchronous scenarios can be remote or local.
+
+SpanKind 描述的第二个属性反映了子 Span 是否表示同步调用。当子跨度同步时，父跨在正常情况下应该等待它完成。了解此属性对跟踪系统很有用，因为同步 Span 可能会导致整体跟踪延迟。异步场景可以是远程的，也可以是本地的。
 
 In order for `SpanKind` to be meaningful, callers SHOULD arrange that
 a single Span does not serve more than one purpose.  For example, a
