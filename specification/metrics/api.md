@@ -1001,18 +1001,24 @@ for the interaction between the API and SDK.
 * A value
 * [`Attributes`](../common/common.md#attributes)
 
-## Compatibility requirements
+## Compatibility requirements  兼容性要求
 
 All the metrics components SHOULD allow new APIs to be added to existing
 components without introducing breaking changes.
 
+所有metrics组件都应该允许将新 API 添加到现有组件中，而不会引入破坏性更改。
+
 All the metrics APIs SHOULD allow optional parameter(s) to be added to existing
 APIs without introducing breaking changes, if possible.
+
+如果可能，所有指标 API 都应该允许将可选参数添加到现有 API 中，而不会引入破坏性更改。
 
 ## Concurrency requirements
 
 For languages which support concurrent execution the Metrics APIs provide
 specific guarantees and safeties.
+
+对于支持并发执行的语言，Metrics API 提供了特定的保证和安全性。
 
 **MeterProvider** - all methods are safe to be called concurrently.
 
