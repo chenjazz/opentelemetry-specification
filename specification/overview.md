@@ -434,6 +434,7 @@ telemetry automatically by OpenTelemetry SDK or specific exporter. See
 OpenTelemetry
 [proto](https://github.com/open-telemetry/opentelemetry-proto/blob/a46c815aa5e85a52deb6cb35b8bc182fb3ca86a0/src/opentelemetry/proto/agent/common/v1/common.proto#L28-L96)
 for an example.
+
 请注意，某些进程标识信息可以通过 OpenTelemetry SDK 或特定导出器自动与遥测相关联。有关示例，请参阅 OpenTelemetry proto。
 
 ## Context Propagation  上下文传播
@@ -455,9 +456,13 @@ imposed by a specific transport and bound to a data type.
 
 OpenTelemetry 使用 Propagators 序列化和反序列化横切关注值，例如 Span（通常只有 SpanContext 部分）和 Baggage。不同的Propagator类型定义了由特定传输施加并绑定到数据类型的限制。
 
-The Propagators API currently defines one `Propagator` type: Propagators API 当前定义了一种 Propagator 类型：
+The Propagators API currently defines one `Propagator` type: 
 
-- `TextMapPropagator` injects values into and extracts values from carriers as text. TextMapPropagator 将值注入到载体中并从载体中提取值作为文本。
+Propagators API 当前定义了一种 Propagator 类型：
+
+- `TextMapPropagator` injects values into and extracts values from carriers as text.
+
+-   TextMapPropagator 将值注入到载体中并从载体中提取值作为文本。
 
 ## Collector 
 
@@ -470,9 +475,13 @@ metrics to one or more monitoring/tracing backends. The collector will allow to
 enrich and transform collected telemetry (e.g. add additional attributes or
 scrub personal information).
 
+OpenTelemetry collector是一组组件，可以从 OpenTelemetry 或其他监控/跟踪库（Jaeger、Prometheus 等）检测的进程中收集traces,metrics和最终其他遥测（telemetry）数据（例如日志），进行聚合和智能采样，以及将traces and metrics导出到一个或多个监控/跟踪后端。收集器将允许丰富和转换收集到的遥测数据（例如添加附加属性或清理个人信息）。
+
 The OpenTelemetry collector has two primary modes of operation: Agent (a daemon
 running locally with the application) and Collector (a standalone running
 service).
+
+OpenTelemetry collector有两种主要的操作模式：代理（与应用程序一起在本地运行的守护进程）和收集器（独立运行的服务）。
 
 Read more at OpenTelemetry Service [Long-term
 Vision](https://github.com/open-telemetry/opentelemetry-collector/blob/master/docs/vision.md).
@@ -488,15 +497,23 @@ a separate library which would inject such calls, using mechanisms such as
 wrapping interfaces, subscribing to library-specific callbacks, or translating
 existing telemetry into the OpenTelemetry model.
 
+该项目的灵感是通过让它们直接调用 OpenTelemetry API 来使每个库和应用程序开箱即用。但是，许多库不会有这样的集成，因此需要一个单独的库来注入此类调用，使用诸如包装接口、订阅特定于库的回调或将现有遥测数据转换为 OpenTelemetry 模型等机制。
+
 A library that enables OpenTelemetry observability for another library is called
 an [Instrumentation Library](glossary.md#instrumentation-library).
 
+为另一个库启用 OpenTelemetry 可观察性的库称为Instrumentation库。
+ 
 An instrumentation library should be named to follow any naming conventions of
 the instrumented library (e.g. 'middleware' for a web framework).
+
+应命名 instrumentation库 以遵循 instrumented 库的任何命名约定（例如，Web 框架的“中间件”）。
 
 If there is no established name, the recommendation is to prefix packages
 with "opentelemetry-instrumentation", followed by the instrumented library
 name itself. Examples include:
+
+如果没有确定的名称，建议使用“opentelemetry-instrumentation”作为包的前缀，然后是instrumented库名称本身。例子包括：
 
 * opentelemetry-instrumentation-flask (Python)
 * @opentelemetry/instrumentation-grpc (Javascript)
