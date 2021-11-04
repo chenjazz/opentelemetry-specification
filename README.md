@@ -10,7 +10,7 @@ _Curious about what OpenTelemetry is? Check out our [website](https://openteleme
 
 The OpenTelemetry specification describes the cross-language requirements and expectations for all OpenTelemetry implementations. Substantive changes to the specification must be proposed using the [OpenTelemetry Enhancement Proposal](https://github.com/open-telemetry/oteps) process. Small changes, such as clarifications, wording changes, spelling/grammar corrections, etc. can be made directly via pull requests.
 
-对于OT实现，OT规范描述跨语言需求和？,规范实质性的改变将使用---，小的改变将会直接pull requests。
+OpenTelemetry 规范描述了所有 OpenTelemetry 实现的跨语言要求和期望。必须使用 OpenTelemetry Enhancement Proposal 流程提出对规范的实质性更改。小的更改，例如澄清、措辞更改、拼写/语法更正等，可以直接通过 pull requests 进行。
 
 Questions that needs additional attention can be brought to the regular
 specifications meeting. EU and US timezone friendly meeting is held every
@@ -19,14 +19,14 @@ doc](https://docs.google.com/document/d/1-bCYkN-DWJq4jw1ybaDZYYmx-WAe6HnwfWbkm8d
 APAC timezone friendly meeting is held Tuesdays, 4PM pacific time. See
 [OpenTelemetry calendar](https://github.com/open-telemetry/community#calendar).
 
-额外需要注意的问题将会带入常规会议。会议时间，会议笔记等信息--。
+需要额外注意的问题可以提交给定期的 规格会议。欧盟和美国时区友好会议于太平洋时间每周二上午 8 点举行。会议记录保存在 google 文档中。亚太时区友好会议于太平洋时间每周二下午 4 点举行。请参阅 OpenTelemetry 日历。。
 
 Escalations to technical committee may be made over the
 [e-mail](https://github.com/open-telemetry/community#tc-technical-committee).
 Technical committee holds regular meetings, notes are held
 [here](https://docs.google.com/document/d/17v2RMZlJZkgoPYHZhIFTVdDqQMIAH8kzo8Sl2kP3cbY/edit?usp=sharing).
 
-升级的问题，技术委员会将会发邮件，做的记录在这。
+可以通过电子邮件向技术委员会上报。技术委员会定期召开会议，记录在这里。
 
 ## Table of Contents
 
