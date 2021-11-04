@@ -56,9 +56,9 @@ Each signal provides a mechanism for software to describe itself. A codebase, su
 This makes OpenTelemetry a [**cross-cutting concern**](https://en.wikipedia.org/wiki/Cross-cutting_concern) - a piece of software which is mixed into many other pieces of software in order to provide value. Cross-cutting concerns, by their very nature, violate a core design principle – separation of concerns. As a result, OpenTelemetry client design requires extra care and attention to avoid creating issues for the codebases which depend upon these cross-cutting APIs.
 
 每个signal提供了软件机制描述他自己。一个代码库，像是web框架或者数据库客户端，需要以来不同的signal描述自己。然后可以将 OpenTelemetry 检测代码混合到该代码库中的其他代码中。？
-这使得 OpenTelemetry 成为一个跨领域的关注点?——一种混合到许多其他软件中以提供价值的软件。。代码交叉，显然，违反了核心设计原则--分离原则。所以，OpenTelemetry 客户端设计需要格外小心和注意，以避免为依赖于这些横切 API 的代码库产生问题。
+这使得 OpenTelemetry 成为一个横切关注点——一种混合到许多其他软件中以提供价值的软件。代码交叉，显然，违反了核心设计原则--分离原则。所以，OpenTelemetry 客户端设计需要格外小心和注意，以避免为依赖于这些横切 API 的代码库产生问题。
 
->“cross-cutting concerns”横切关注点：指的是两个非常不一样的组件存在一些类似的功能
+>“cross-cutting concerns” 横切关注点：指的是两个非常不一样的组件存在一些类似的功能
 
 OpenTelemetry clients are designed to separate the portion of each signal which must be imported as cross-cutting concerns from the portions which can be managed independently. OpenTelemetry clients are also designed to be an extensible framework.
 To accomplish these goals, each signal consists of four types of packages: API, SDK, Semantic Conventions, and Contrib.
@@ -69,7 +69,7 @@ OpenTelemetry 客户端旨在将每个信号中必须作为横切关注点导入
 
 API packages consist of the cross-cutting public interfaces used for instrumentation. Any portion of an OpenTelemetry client which is imported into third-party libraries and application code is considered part of the API.
 
-API 包由用于检测的横切公共接口组成。导入的第三方库和应用程序代码的 OpenTelemetry 客户端的任何部分都被视为 API 的一部分。在一个应用程序中，
+API 包由用于检测的横切公共接口组成。导入的第三方库和应用程序代码的 OpenTelemetry 客户端的任何部分都被视为 API 的一部分。
 
 
 ### SDK
@@ -79,15 +79,17 @@ Note that the SDK includes additional public interfaces which are not considered
 Application owners use the SDK constructors; [plugin authors](glossary.md#plugin-author) use the SDK plugin interfaces.
 [Instrumentation authors](glossary.md#instrumentation-author) MUST NOT directly reference any SDK package of any kind, only the API.
 
-SDK是OpenTelemetry项目提供的API的实现，SDK由应用程序所有者安装和管理。请注意，SDK 包含其他公共接口，这些接口不被视为 API 包的一部分
+SDK是OpenTelemetry项目提供的API的实现，SDK由应用程序所有者安装和管理。请注意，SDK 包含其他公共接口，这些接口不被视为 API 包的一部分，因为它们不是横切关注点。这些公共接口被定义为构造函数和插件接口？。应用程序所有者使用 SDK 构造函数；插件作者使用 SDK 插件接口。Instrumentation作者不得直接引用任何类型的任何 SDK 包，只能引用 API
 
-### Semantic Conventions
+### Semantic Conventions   语义约定
+
 
 The **Semantic Conventions** define the keys and values which describe commonly observed concepts, protocols, and operations used by applications.
+语义约定定义了描述应用程序使用的常见概念、协议和操作的键和值。
 
-* [Resource Conventions](resource/semantic_conventions/README.md)
-* [Span Conventions](trace/semantic_conventions/README.md)
-* [Metrics Conventions](metrics/semantic_conventions/README.md)
+* [Resource Conventions](resource/semantic_conventions/README.md)  //TODO
+* [Span Conventions](trace/semantic_conventions/README.md)    //TODO
+* [Metrics Conventions](metrics/semantic_conventions/README.md)   //TODO
 
 Both the collector and the client libraries SHOULD autogenerate semantic
 convention keys and enum values into constants (or language idomatic
@@ -98,7 +100,9 @@ source of truth for generation. Each language implementation SHOULD
 provide language-specific support to the
 [code generator](https://github.com/open-telemetry/build-tools/tree/main/semantic-conventions#code-generator).
 
-使用yaml文件定义规范
+collector和客户端库都应该自动生成语义约定键和枚举值到常量（或语言惯用语等价物?）。在语义约定稳定之前，不应将生成的值分发到稳定的包中。YAML 文件必须用作生成的真实来源？。每个语言实现都应该为代码生成器提供特定于语言的支持？。
+
+ 
 
 ### Contrib Packages
 
@@ -106,16 +110,28 @@ The OpenTelemetry project maintains integrations with popular OSS projects which
 Example API integrations include instrumentation for web frameworks, database clients, and message queues.
 Example SDK integrations include plugins for exporting telemetry to popular analysis tools and telemetry storage systems.
 
+OpenTelemetry 项目保持与流行的 OSS 项目的集成，这些项目已被确定为对观察现代 Web 服务很重要。OpenTelemetry 项目保持与流行的 OSS 项目的集成，这些项目已被确定为对观察现代 Web 服务很重要。示例 SDK 集成包括用于将遥测数据导出到流行分析工具和遥测存储系统（telemetry storage systems）的插件。
+
 Some plugins, such as OTLP Exporters and TraceContext Propagators, are required by the OpenTelemetry specification. These required plugins are included as part of the SDK.
+
+
+
+OpenTelemetry 规范需要一些插件，例如 OTLP 导出器（Exporters）和 TraceContext 传播器（Propagators）。
 
 Plugins and instrumentation packages which are optional and separate from the SDK are referred to as **Contrib** packages.
 **API Contrib** refers to packages which depend solely upon the API; **SDK Contrib** refers to packages which also depend upon the SDK.
 
+可选且与 SDK 分离的插件和检测包称为 Contrib 包。API Contrib 是指完全依赖 API 的包； SDK Contrib 是指也依赖于 SDK 的包。
+
 The term Contrib specifically refers to the collection of plugins and instrumentation maintained by the OpenTelemetry project; it does not refer to third-party plugins hosted elsewhere.
 
-### Versioning and Stability
+### Versioning and Stability 版本控制和稳定性
 
 OpenTelemetry values stability and backwards compatibility. Please see the [versioning and stability guide](./versioning-and-stability.md) for details.
+
+OpenTelemetry 重视稳定性和向后兼容性。有关详细信息，请参阅版本控制和稳定性指南
+
+
 
 ## Tracing Signal
 
@@ -127,6 +143,8 @@ to start an action on a website - in this example, the trace will represent
 calls made between the downstream services that handled the chain of requests
 initiated by this button being pressed.
 
+分布式跟踪是一组事件，由单个逻辑操作触发，跨应用程序的各个组件进行整合。分布式跟踪包含跨越进程、网络和安全边界的事件。当有人按下按钮在网站上开始操作时，可能会启动分布式跟踪 - 在此示例中，跟踪将表示下游服务之间进行的调用，这些服务处理由按下此按钮发起的请求链。
+
 ### Traces
 
 **Traces** in OpenTelemetry are defined implicitly by their **Spans**. In
@@ -134,10 +152,14 @@ particular, a **Trace** can be thought of as a directed acyclic graph (DAG) of
 **Spans**, where the edges between **Spans** are defined as parent/child
 relationship.
 
+OpenTelemetry 中的**跟踪（Traces）** 是由它们的 **Spans** 隐式定义的。特别是，可以将 Trace 视为 Span 的有向无环图 (DAG)，其中 Span 之间的边被定义为父/子关系。
+
 For example, the following is an example **Trace** made up of 6 **Spans**:
+例如，以下是由 6 个 Span 组成的示例 Trace：
 
 ```
 Causal relationships between Spans in a single Trace
+单个 Trace 中 Span 之间的因果关系
 
         [Span A]  ←←←(the root span)
             |
@@ -152,6 +174,7 @@ Causal relationships between Spans in a single Trace
 
 Sometimes it's easier to visualize **Traces** with a time axis as in the diagram
 below:
+有时使用时间轴可视化跟踪更容易，如下图所示：
 
 ```
 Temporal relationships between Spans in a single Trace
@@ -170,15 +193,16 @@ Temporal relationships between Spans in a single Trace
 
 A span represents an operation within a transaction. Each **Span** encapsulates
 the following state:
+span表示事务中的操作。每个 Span 封装了以下状态：
 
-- An operation name
-- A start and finish timestamp
-- [**Attributes**](./common/common.md#attributes): A list of key-value pairs.
-- A set of zero or more **Events**, each of which is itself a tuple (timestamp, name, [**Attributes**](./common/common.md#attributes)). The name must be strings.
-- Parent's **Span** identifier.
-- [**Links**](#links-between-spans) to zero or more causally-related **Spans**
-  (via the **SpanContext** of those related **Spans**).
-- **SpanContext** information required to reference a Span. See below.
+- An operation name  操作名
+- A start and finish timestamp  开始结束时间
+- [**Attributes**](./common/common.md#attributes): A list of key-value pairs.   键值对列表
+- A set of zero or more **Events**, each of which is itself a tuple (timestamp, name, [**Attributes**](./common/common.md#attributes)). The name must be strings. 一组零个或多个Events，每个本身都是一个元组（时间戳、名称、Attributes）。名称必须是字符串。
+- Parent's **Span** identifier.  父级的 Span 标识符
+- [**Links**](#links-between-spans) to zero or more causally-related **Spans**  
+  (via the **SpanContext** of those related **Spans**).   Links到零个或多个因果相关的 Span（通过这些相关 Span 的 SpanContext）。
+- **SpanContext** information required to reference a Span. See below.  引用 Span 所需的 SpanContext 信息。见下文。
 
 ### SpanContext
 
@@ -187,22 +211,28 @@ MUST be propagated to child Spans and across process boundaries. A
 **SpanContext** contains the tracing identifiers and the options that are
 propagated from parent to child **Spans**.
 
+表示在 Trace 中标识 Span 的所有信息，并且必须传播到子 Span 并跨越进程边界。 SpanContext 包含跟踪标识符和从父级传播到子级 Span 的选项。
+
 - **TraceId** is the identifier for a trace. It is worldwide unique with
   practically sufficient probability by being made as 16 randomly generated
   bytes. TraceId is used to group all spans for a specific trace together across
   all processes.
+  TraceId 是跟踪的标识符。它被制作为 16 个随机生成的字节，在世界范围内是独一无二的，具有足够的可能性。 TraceId 用于将所有进程的特定跟踪的所有跨度组合在一起。
 - **SpanId** is the identifier for a span. It is globally unique with
   practically sufficient probability by being made as 8 randomly generated
   bytes. When passed to a child Span this identifier becomes the parent span id
   for the child **Span**.
+  SpanId 是span的标识符。通过将其生成为 8 个随机生成的字节，它是全局唯一的，具有实际足够的可能性。当传递给子跨度时，此标识符成为子跨度的父跨度 ID。
 - **TraceFlags** represents the options for a trace. It is represented as 1
   byte (bitmap).
   - Sampling bit -  Bit to represent whether trace is sampled or not (mask
     `0x1`).
+    TraceFlags 表示跟踪的选项。它表示为 1 个字节（位图）。 采样位 - 表示是否对跟踪进行采样的位（掩码 0x1）。
 - **Tracestate** carries tracing-system specific context in a list of key value
   pairs. **Tracestate** allows different vendors propagate additional
   information and inter-operate with their legacy Id formats. For more details
   see [this](https://w3c.github.io/trace-context/#tracestate-field).
+  Tracestate 在键值对列表中携带跟踪系统特定的上下文。 Tracestate 允许不同的供应商传播额外的信息并与其旧的 Id 格式进行互操作？。有关更多详细信息，请参阅此。
 
 ### Links between spans
 
@@ -213,12 +243,16 @@ A **Span** may be linked to zero or more other **Spans** (defined by
 initiated by multiple initiating **Spans**, each representing a single incoming
 item being processed in the batch.
 
+一个 Span 可以链接到零个或多个其他有因果关系的 Span（由 SpanContext 定义）。Links 可以指向单个Trace 内或跨不同Trace 的Spans 。Links 可用于表示批处理操作，其中一个 Span 由多个启动 Span 启动，每个 Span 表示正在批处理中处理的单个传入项目。
+
 Another example of using a **Link** is to declare the relationship between
 the originating and following trace. This can be used when a **Trace** enters trusted
 boundaries of a service and service policy requires the generation of a new
 Trace rather than trusting the incoming Trace context. The new linked Trace may
 also represent a long running asynchronous data processing operation that was
 initiated by one of many fast incoming requests.
+
+使用Link的另一个示例是声明原始trace和后续trace之间的关系。当 Trace 进入服务的可信边界并且服务策略需要生成新 Trace 而不是信任传入的 Trace 上下文时，可以使用此方法。新链接的 Trace 也可能表示由许多快速传入请求之一启动的长时间运行的异步数据处理操作。
 
 When using the scatter/gather (also called fork/join) pattern, the root
 operation starts multiple downstream processing operations and all of them are
@@ -230,10 +264,14 @@ represents a single parent scenario, in many cases the parent **Span** fully
 encloses the child **Span**. This is not the case in scatter/gather and batch
 scenarios.
 
+使用 scatter/gather（也称为 fork/join）模式时，根操作会启动多个下游处理操作，并且所有这些操作都会聚合回单个 Span。最后一个 Span 与其聚合的许多操作相关联。它们都是来自同一 Trace 的 Span。类似于 Span 的 Parent 字段。但是，建议不要在此场景中设置 Span 的父级，因为在语义上父字段表示单个父级场景，在许多情况下，父级 Span 完全包含子级 Span。在分散/聚集和批处理场景中，情况并非如此。
+
 ## Metric Signal
 
 OpenTelemetry allows to record raw measurements or metrics with predefined
 aggregation and a [set of attributes](./common/common.md#attributes).
+
+OpenTelemetry 允许使用预定义的聚合和一组属性记录原始测量值或指标。
 
 Recording raw measurements using OpenTelemetry API allows to defer to end-user
 the decision on what aggregation algorithm should be applied for this metric as
@@ -242,17 +280,24 @@ gRPC to record raw measurements "server_latency" or "received_bytes". So end
 user will decide what type of aggregated values should be collected out of these
 raw measurements. It may be simple average or elaborate histogram calculation.
 
+使用 OpenTelemetry API 记录原始测量结果允许将最终用户关于应为该指标应用哪种聚合算法以及定义属性（维度）的决定推迟。它将在 gRPC 等客户端库中用于记录原始测量结果“server_latency”或“received_bytes”。因此，最终用户将决定应从这些原始测量中收集何种类型的聚合值。它可能是简单的平均或复杂的直方图计算。
+
 Recording of metrics with the pre-defined aggregation using OpenTelemetry API is
 not less important. It allows to collect values like cpu and memory usage, or
 simple metrics like "queue length".
 
-### Recording raw measurements
+使用 OpenTelemetry API 通过预定义聚合记录指标同样重要。它允许收集诸如 cpu 和内存使用率之类的值，或诸如“队列长度”之类的简单指标。
+
+### Recording raw measurements   记录原始测量值
+
 
 The main classes used to record raw measurements are `Measure` and
 `Measurement`. List of `Measurement`s alongside the additional context can be
 recorded using OpenTelemetry API. So user may define to aggregate those
 `Measurement`s and use the context passed alongside to define additional
 dimensions of the resulting metric.
+
+用于记录原始测量值的主要类是 Measure 和 Measurement。可以使用 OpenTelemetry API 记录与附加上下文一起的Measurement列表。因此，用户可以定义聚合这些度量，并使用随同传递的上下文来定义结果度量的其他维度。
 
 #### Measure
 
@@ -261,13 +306,17 @@ defines a contract between the library exposing the measurements and an
 application that will aggregate those individual measurements into a `Metric`.
 `Measure` is identified by name, description and a unit of values.
 
+度量（Measure）  描述了库记录的单个值的类型。它定义了公开测量值的库和将这些单个测量值聚合为 指标（ `Metric` ）的应用程序之间的契约。度量 `Measure`  由名称、描述和值单位标识。
+
 #### Measurement
 
 `Measurement` describes a single value to be collected for a `Measure`.
 `Measurement` is an empty interface in API surface. This interface is defined in
 SDK.
 
-### Recording metrics with predefined aggregation
+`Measurement` 描述了要为`Measure`收集的单个值。`Measurement`是 API 表面中的一个空接口。该接口在 SDK 中定义。
+
+### Recording metrics with predefined aggregation  使用预定义聚合记录指标
 
 The base class for all types of pre-aggregated metrics is called `Metric`. It
 defines basic metric properties like a name and attributes. Classes inheriting from
@@ -275,18 +324,26 @@ the `Metric` define their aggregation type as well as a structure of individual
 measurements or Points. API defines the following types of pre-aggregated
 metrics:
 
+所有类型的预聚合指标的基类称为 Metric。它定义了基本的度量属性，如名称和属性。从 Metric 继承的类定义了它们的聚合类型以及单个测量或点的结构。 API 定义了以下类型的预聚合指标：
+
 - Counter metric to report instantaneous measurement. Counter values can go
   up or stay the same, but can never go down. Counter values cannot be
   negative. There are two types of counter metric values - `double` and `long`.
+   计数器指标（Counter metric ）用于报告瞬时测量值的。Counter值可以上升或保持不变，但永远不会下降。计数器值不能为负。有两种类型的计数器度量值 - double 和 long。
 - Gauge metric to report instantaneous measurement of a numeric value. Gauges can
   go both up and down. The gauges values can be negative. There are two types of
   gauge metric values - `double` and `long`.
+  
+  （Gauge metric ）用于报告数值的瞬时测量值 。Gauges可以上升也可以下降。仪表值可以为负。有两种类型的仪表度量值 - double 和 long。
 
 API allows to construct the `Metric` of a chosen type. SDK defines the way to
 query the current value of a `Metric` to be exported.
+API 允许构建所选类型的  `Metric`（指标）。 SDK 定义了查询要导出的 Metric 的当前值的方式。
 
 Every type of a `Metric` has it's API to record values to be aggregated. API
 supports both - push and pull model of setting the `Metric` value.
+
+每种类型的`Metric`（指标）都有其 API 来记录要聚合的值。 API 支持设置 Metric 值的推和拉模型。
 
 ### Metrics data model and SDK
 
