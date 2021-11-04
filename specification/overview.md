@@ -353,17 +353,23 @@ This data model defines three semantics: An Event model used by the API, an
 in-flight data model used by the SDK and OTLP, and a TimeSeries model which
 denotes how exporters should interpret the in-flight model.
 
+此处指定了指标数据模型，该模型基于 metrics.proto。该数据模型定义了三种语义：API 使用的事件模型、SDK 和 OTLP 使用的动态数据模型以及表示导出器应如何解释动态模型的 TimeSeries 模型。
+
 Different exporters have different capabilities (e.g. which data types are
 supported) and different constraints (e.g. which characters are allowed in attribute
 keys). Metrics is intended to be a superset of what's possible, not a lowest
 common denominator that's supported everywhere. All exporters consume data from
 Metrics Data Model via a Metric Producer interface defined in OpenTelemetry SDK.
 
+不同的导出器（exporters）具有不同的功能（例如支持哪些数据类型）和不同的约束（例如属性键中允许哪些字符）。Metrics 旨在成为可能的超集，而不是任何地方都支持的最低。所有导出器（exporters）都通过 OpenTelemetry SDK 中定义的 Metric Producer 接口使用来自 Metrics Data Model 的数据。
+
 Because of this, Metrics puts minimal constraints on the data (e.g. which
 characters are allowed in keys), and code dealing with Metrics should avoid
 validation and sanitization of the Metrics data. Instead, pass the data to the
 backend, rely on the backend to perform validation, and pass back any errors
 from the backend.
+
+因此，Metrics 对数据的限制最小（例如，键中允许使用哪些字符），并且处理 Metrics 的代码应避免对 Metrics 数据进行验证和清理。相反，将数据传递给后端，依靠后端执行验证，并将任何错误从后端传回。
 
 See [Metrics Data Model Specification](metrics/datamodel.md) for more
 information.
@@ -375,6 +381,9 @@ information.
 [Log Data Model](logs/data-model.md) defines how logs and events are understood by
 OpenTelemetry.
 
+日志数据模型定义了 OpenTelemetry 如何理解日志和事件。
+
+
 ## Baggage Signal
 
 In addition to trace propagation, OpenTelemetry provides a simple mechanism for propagating
@@ -382,20 +391,29 @@ name/value pairs, called `Baggage`. `Baggage` is intended for
 indexing observability events in one service with attributes provided by a prior service in
 the same transaction. This helps to establish a causal relationship between these events.
 
+除了跟踪传播之外，OpenTelemetry 还提供了一种用于传播名称/值对的简单机制，称为 Baggage。 Baggage 用于索引一项服务中的可观察性事件，其属性由同一事务中的先前服务提供。这有助于在这些事件之间建立因果关系。
+
 While `Baggage` can be used to prototype other cross-cutting concerns, this mechanism is primarily intended
 to convey values for the OpenTelemetry observability systems.
 
+虽然 Baggage 可用于构建其他横切关注点的原型，但该机制主要用于传达 OpenTelemetry 可观察性系统的值。
+
 These values can be consumed from `Baggage` and used as additional dimensions for metrics,
 or additional context for logs and traces. Some examples:
+这些值可以从 Baggage 中使用，并用作指标的附加维度，或日志和跟踪的附加上下文。一些例子：
 
 - a web service can benefit from including context around what service has sent the request
+-  Web 服务可以从包含发送请求的服务的上下文中受益
 - a SaaS provider can include context about the API user or token that is responsible for that request
+- SaaS 提供商可以包含有关负责该请求的 API 用户或令牌的上下文
 - determining that a particular browser version is associated with a failure in an image processing service
+- 确定特定浏览器版本与图像处理服务中的故障相关联
 
 For backward compatibility with OpenTracing, Baggage is propagated as `Baggage` when
 using the OpenTracing bridge. New concerns with different criteria should consider creating a new
 cross-cutting concern to cover their use-case; they may benefit from the W3C encoding format but
 use a new HTTP header to convey data throughout a distributed trace.
+为了与 OpenTracing 向后兼容，当使用 OpenTracing 桥bridge时，Baggage 作为 Baggage 传播。具有不同标准的 cross-cutting   应考虑创建一个新的跨领域关注点以涵盖其用例；它们可能受益于 W3C 编码格式，但使用新的 HTTP 标头在整个分布式跟踪中传送数据。
 
 ## Resources
 
@@ -403,35 +421,46 @@ use a new HTTP header to convey data throughout a distributed trace.
 recorded. For example, metrics exposed by a Kubernetes container can be linked
 to a resource that specifies the cluster, namespace, pod, and container name.
 
+`Resource` 捕获有关记录遥测的实体的信息。例如，Kubernetes 容器公开的指标可以链接到指定集群、命名空间、pod 和容器名称的资源。
+
 `Resource` may capture an entire hierarchy of entity identification. It may
 describe the host in the cloud and specific container or an application running
 in the process.
+
+`Resource`可以捕获实体标识的整个层次结构。它可以描述云中的主机和特定的容器或进程中运行的应用程序。
 
 Note, that some of the process identification information can be associated with
 telemetry automatically by OpenTelemetry SDK or specific exporter. See
 OpenTelemetry
 [proto](https://github.com/open-telemetry/opentelemetry-proto/blob/a46c815aa5e85a52deb6cb35b8bc182fb3ca86a0/src/opentelemetry/proto/agent/common/v1/common.proto#L28-L96)
 for an example.
+请注意，某些进程标识信息可以通过 OpenTelemetry SDK 或特定导出器自动与遥测相关联。有关示例，请参阅 OpenTelemetry proto。
 
-## Context Propagation
+## Context Propagation  上下文传播
+
 
 All of OpenTelemetry cross-cutting concerns, such as traces and metrics,
 share an underlying `Context` mechanism for storing state and
 accessing data across the lifespan of a distributed transaction.
 
+所有 OpenTelemetry 横切关注点（例如 跟踪和度量 traces and metrics）共享底层 Context 机制，用于在分布式事务的整个生命周期中存储状态和访问数据。
+
 See the [Context](context/context.md)
 
-## Propagators
+## Propagators 传播者
 
 OpenTelemetry uses `Propagators` to serialize and deserialize cross-cutting concern values
 such as `Span`s (usually only the `SpanContext` portion) and `Baggage`. Different `Propagator` types define the restrictions
 imposed by a specific transport and bound to a data type.
 
-The Propagators API currently defines one `Propagator` type:
+OpenTelemetry 使用 Propagators 序列化和反序列化横切关注值，例如 Span（通常只有 SpanContext 部分）和 Baggage。不同的Propagator类型定义了由特定传输施加并绑定到数据类型的限制。
 
-- `TextMapPropagator` injects values into and extracts values from carriers as text.
+The Propagators API currently defines one `Propagator` type: Propagators API 当前定义了一种 Propagator 类型：
 
-## Collector
+- `TextMapPropagator` injects values into and extracts values from carriers as text. TextMapPropagator 将值注入到载体中并从载体中提取值作为文本。
+
+## Collector 
+
 
 The OpenTelemetry collector is a set of components that can collect traces,
 metrics and eventually other telemetry data (e.g. logs) from processes
