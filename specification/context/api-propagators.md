@@ -45,58 +45,84 @@ context data to and from messages exchanged by the applications.
 Each concern creates a set of `Propagator`s for every supported
 `Propagator` type.
 
+横切关注点使用传播器将它们的状态发送到下一个进程，传播器被定义为用于从应用程序交换的消息读取和写入上下文数据的对象。每个关注点为每个支持的传播器类型创建一组传播器。
+
 `Propagator`s leverage the `Context` to inject and extract data for each
 cross-cutting concern, such as traces and `Baggage`.
+
+传播器利用上下文为每个横切关注点注入和提取数据，例如traces 和 `Baggage`。
 
 Propagation is usually implemented via a cooperation of library-specific request
 interceptors and `Propagators`, where the interceptors detect incoming and outgoing requests and use the `Propagator`'s extract and inject operations respectively.
 
+传播通常通过库特定的请求拦截器和传播器的合作来实现，其中拦截器检测传入和传出的请求，并分别使用传播器的提取和注入操作。
+
 The Propagators API is expected to be leveraged by users writing
 instrumentation libraries.
 
-## Propagator Types
+Propagators API 预计将被编写instrumentation库的用户所利用。
+
+## Propagator Types  传播器类型
+
 
 A `Propagator` type defines the restrictions imposed by a specific transport
 and is bound to a data type, in order to propagate in-band context data across process boundaries.
 
-The Propagators API currently defines one `Propagator` type:
+传播器类型定义了特定传输所施加的限制并绑定到数据类型，以便跨进程边界传播 带内 上下文数据。
+
+
+The Propagators API currently defines one `Propagator` type:Propagators API 当前定义了一种 Propagator 类型：
+
 
 - `TextMapPropagator` is a type that inject values into and extracts values
-  from carriers as string key/value pairs.
+  from carriers as string key/value pairs.  TextMapPropagator 是一种将值作为字符串键/值对从载体中注入和提取的类型。
 
-A binary `Propagator` type will be added in the future (see [#437](https://github.com/open-telemetry/opentelemetry-specification/issues/437)).
+A binary `Propagator` type will be added in the future (see [#437](https://github.com/open-telemetry/opentelemetry-specification/issues/437)).将来会添加二进制传播器类型（请参阅#437）。
 
-### Carrier
+### Carrier  载体
+
 
 A carrier is the medium used by `Propagator`s to read values from and write values to.
 Each specific `Propagator` type defines its expected carrier type, such as a string map
 or a byte array.
 
-Carriers used at [Inject](#inject) are expected to be mutable.
+载体是传播器用来读取和写入值的介质。每个特定的传播器类型定义其预期的载体类型，例如字符串映射或字节数组。
 
-### Operations
+Carriers used at [Inject](#inject) are expected to be mutable.Inject 中使用的载体预计是可变的。
+
+### Operations 操作
+
 
 `Propagator`s MUST define `Inject` and `Extract` operations, in order to write
 values to and read values from carriers respectively. Each `Propagator` type MUST define the specific carrier type
 and MAY define additional parameters.
 
-#### Inject
+传播者必须定义注入和提取操作，以便分别向载体写入值和从载体读取值。每个传播器类型必须定义特定的载波类型并且可以定义附加参数。
 
-Injects the value into a carrier. For example, into the headers of an HTTP request.
+#### Inject 注入
+
+Injects the value into a carrier. For example, into the headers of an HTTP request. 
+
+将值注入载体。例如，放入 HTTP 请求的标头。
 
 Required arguments:
 
 - A `Context`. The Propagator MUST retrieve the appropriate value from the `Context` first, such as
-`SpanContext`, `Baggage` or another cross-cutting concern context.
-- The carrier that holds the propagation fields. For example, an outgoing message or HTTP request.
+`SpanContext`, `Baggage` or another cross-cutting concern context.传播器必须首先从上下文中检索适当的值，例如 SpanContext、Baggage 或其他横切关注上下文。
+- The carrier that holds the propagation fields. For example, an outgoing message or HTTP request.承载传播场的载体。例如，传出消息或 HTTP 请求。
 
-#### Extract
+#### Extract 提取
 
 Extracts the value from an incoming request. For example, from the headers of an HTTP request.
+
+从传入请求中提取值。例如，来自 HTTP 请求的标头。
 
 If a value can not be parsed from the carrier, for a cross-cutting concern,
 the implementation MUST NOT throw an exception and MUST NOT store a new value in the `Context`,
 in order to preserve any previously existing valid value.
+
+如果无法从载体解析值，对于横切关注点，实现不得抛出异常并且不得在上下文中存储新值，以保留任何先前存在的有效值。
+
 
 Required arguments:
 
@@ -107,102 +133,139 @@ Returns a new `Context` derived from the `Context` passed as argument,
 containing the extracted value, which can be a `SpanContext`,
 `Baggage` or another cross-cutting concern context.
 
+返回从作为参数传递的 Context 派生的新 Context，其中包含提取的值，可以是 SpanContext、Baggage 或其他横切关注上下文。
+
 ## TextMap Propagator
 
 `TextMapPropagator` performs the injection and extraction of a cross-cutting concern
 value as string key/values pairs into carriers that travel in-band across process boundaries.
 
+TextMapPropagator 执行将横切关注值作为字符串键/值对注入和提取到跨进程边界带内传输的载体中。
+
 The carrier of propagated data on both the client (injector) and server (extractor) side is
 usually an HTTP request.
 
+客户端（注入器）和服务器（提取器）端传播数据的载体通常是 HTTP 请求。
+
 In order to increase compatibility, the key/value pairs MUST only consist of US-ASCII characters
 that make up valid HTTP header fields as per [RFC 7230](https://tools.ietf.org/html/rfc7230#section-3.2).
+
+为了提高兼容性，键/值对必须仅包含构成符合 RFC 7230 的有效 HTTP 标头字段的 US-ASCII 字符。
 
 `Getter` and `Setter` are optional helper components used for extraction and injection respectively,
 and are defined as separate objects from the carrier to avoid runtime allocations,
 by removing the need for additional interface-implementing-objects wrapping the carrier in order
 to access its contents.
 
+Getter 和 Setter 是分别用于提取和注入的可选辅助组件，它们被定义为与载体分离的对象，以避免运行时分配，通过消除包装载体的额外接口实现对象以访问其内容的需要。
+
 `Getter` and `Setter` MUST be stateless and allowed to be saved as constants, in order to effectively
 avoid runtime allocations.
 
-### Fields
+Getter 和 Setter 必须是无状态的并允许保存为常量，以有效避免运行时分配。
+
+### Fields 字段
 
 The predefined propagation fields. If your carrier is reused, you should delete the fields here
 before calling [inject](#inject).
 
+预定义的传播字段。如果你的carrier被重复使用，你应该在调用注入之前删除这里的字段。
+
 Fields are defined as string keys identifying format-specific components in a carrier.
+
+字段被定义为标识载体中特定格式组件的字符串键。
 
 For example, if the carrier is a single-use or immutable request object, you don't need to
 clear fields as they couldn't have been set before. If it is a mutable, retryable object,
 successive calls should clear these fields first.
 
-The use cases of this are:
+例如，如果carrier是一次性或不可变的请求对象，则您不需要清除字段，因为它们之前无法设置。如果它是一个可变的、可重试的对象，连续调用应该首先清除这些字段。
 
-- allow pre-allocation of fields, especially in systems like gRPC Metadata
-- allow a single-pass over an iterator
+The use cases of this are:它的用例是：
 
-Returns list of fields that will be used by the `TextMapPropagator`.
+
+- allow pre-allocation of fields, especially in systems like gRPC Metadata  允许预先分配字段，尤其是在 gRPC 元数据等系统中
+- allow a single-pass over an iterator  允许单次遍历迭代器
+
+
+Returns list of fields that will be used by the `TextMapPropagator`.  返回将由 TextMapPropagator 使用的字段列表
 
 Observe that some `Propagator`s may define, besides the returned values, additional fields with
 variable names. To get a full list of fields for a specific carrier object, use the
 [Keys](#keys) operation.
 
-### TextMap Inject
+返回将由 TextMapPropagator 使用的字段列表
+
+### TextMap Inject    TextMap注入
 
 Injects the value into a carrier. The required arguments are the same as defined by
-the base [Inject](#inject) operation.
+the base [Inject](#inject) operation.  将值注入载体。所需的参数与基本注入操作定义的相同。
 
-Optional arguments:
+Optional arguments: 可选参数：
+
 
 - A `Setter` to set a propagation key/value pair. Propagators MAY invoke it multiple times in order to set multiple pairs.
   This is an additional argument that languages are free to define to help inject data into the carrier.
+  
+  设置传播键/值对的 Setter。传播者可以多次调用它以设置多个对。这是语言可以自由定义的附加参数，以帮助将数据注入载体。
 
 #### Setter argument
 
-Setter is an argument in `Inject` that sets values into given fields.
+Setter is an argument in `Inject` that sets values into given fields.  Setter 是 Inject 中的一个参数，用于将值设置到给定的字段中。
 
-`Setter` allows a `TextMapPropagator` to set propagated fields into a carrier.
+`Setter` allows a `TextMapPropagator` to set propagated fields into a carrier.  Setter 允许 TextMapPropagator 将传播的字段设置到载体中。
 
-One of the ways to implement it is `Setter` class with `Set` method as described below.
+One of the ways to implement it is `Setter` class with `Set` method as described below.  实现它的方法之一是带有 Set 方法的 Setter 类，如下所述。
 
 ##### Set
 
-Replaces a propagated field with the given value.
+Replaces a propagated field with the given value.  用给定的值替换传播的字段。
 
 Required arguments:
 
-- the carrier holding the propagation fields. For example, an outgoing message or an HTTP request.
+- the carrier holding the propagation fields. For example, an outgoing message or an HTTP request.  承载传播场的载体。例如，传出消息或 HTTP 请求。
 - the key of the field.
 - the value of the field.
 
 The implementation SHOULD preserve casing (e.g. it should not transform `Content-Type` to `content-type`) if the used protocol is case insensitive, otherwise it MUST preserve casing.
 
-### TextMap Extract
+如果使用的协议不区分大小写，则实现应该保留大小写（例如，它不应该将 Content-Type 转换为content-type ），否则它必须保留大小写。
+
+### TextMap Extract  提取
 
 Extracts the value from an incoming request. The required arguments are the same as defined by
 the base [Extract](#extract) operation.
+
+从传入请求中提取值。所需的参数与基本提取操作定义的相同。
 
 Optional arguments:
 
 - A `Getter` invoked for each propagation key to get. This is an additional
   argument that languages are free to define to help extract data from the carrier.
+  
+  为每个要获取的传播键调用一个 Getter。这是一个额外的参数，语言可以自由定义以帮助从载体中提取数据
 
-Returns a new `Context` derived from the `Context` passed as argument.
+Returns a new `Context` derived from the `Context` passed as argument.返回从作为参数传递的上下文派生的新上下文。
 
 #### Getter argument
 
-Getter is an argument in `Extract` that get value from given field
+Getter is an argument in `Extract` that get value from given field  
+
+Getter 是 Extract 中的一个参数，用于从给定字段中获取值
 
 `Getter` allows a `TextMapPropagator` to read propagated fields from a carrier.
+
+Getter 允许 TextMapPropagator 从载体读取传播的字段。
 
 One of the ways to implement it is `Getter` class with `Get` and `Keys` methods
 as described below. Languages may decide on alternative implementations and
 expose corresponding methods as delegates or other ways.
 
+实现它的方法之一是具有 Get 和 Keys 方法的 Getter 类，如下所述。语言可以决定替代实现并将相应的方法公开为委托或其他方式。
+
 ##### Keys
 
-The `Keys` function MUST return the list of all the keys in the carrier.
+The `Keys` function MUST return the list of all the keys in the carrier.  Keys 函数必须返回载体中所有键的列表。
 
 Required arguments:
 
@@ -218,6 +281,8 @@ For example, it can be used to detect all keys following the `uberctx-{user-defi
 
 The Get function MUST return the first value of the given propagation key or return null if the key doesn't exist.
 
+Get 函数必须返回给定传播键的第一个值，如果键不存在则返回 null。
+
 Required arguments:
 
 - the carrier of propagation fields, such as an HTTP request.
@@ -225,13 +290,15 @@ Required arguments:
 
 The Get function is responsible for handling case sensitivity. If the getter is intended to work with a HTTP request object, the getter MUST be case insensitive.
 
-## Injectors and Extractors as Separate Interfaces
+## Injectors and Extractors as Separate Interfaces  作为独立接口的注射器和提取器
 
 Languages can choose to implement a `Propagator` type as a single object
 exposing `Inject` and `Extract` methods, or they can opt to divide the
 responsibilities further into individual `Injector`s and `Extractor`s. A
 `Propagator` can be implemented by composing individual `Injector`s and
 `Extractors`.
+
+语言可以选择将 Propagator 类型实现为暴露 Inject 和 Extract 方法的单个对象，或者他们可以选择将职责进一步划分为单独的 Injector 和 Extractor。传播器可以通过组合单独的注入器和提取器来实现。
 
 ## Composite Propagator
 
