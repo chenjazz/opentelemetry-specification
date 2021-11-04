@@ -58,6 +58,8 @@ This makes OpenTelemetry a [**cross-cutting concern**](https://en.wikipedia.org/
 每个signal提供了软件机制描述他自己。一个代码库，像是web框架或者数据库客户端，需要以来不同的signal描述自己。然后可以将 OpenTelemetry 检测代码混合到该代码库中的其他代码中。？
 这使得 OpenTelemetry 成为一个跨领域的关注点?——一种混合到许多其他软件中以提供价值的软件。。代码交叉，显然，违反了核心设计原则--分离原则。所以，OpenTelemetry 客户端设计需要格外小心和注意，以避免为依赖于这些横切 API 的代码库产生问题。
 
+>“cross-cutting concerns”横切关注点：指的是两个非常不一样的组件存在一些类似的功能
+
 OpenTelemetry clients are designed to separate the portion of each signal which must be imported as cross-cutting concerns from the portions which can be managed independently. OpenTelemetry clients are also designed to be an extensible framework.
 To accomplish these goals, each signal consists of four types of packages: API, SDK, Semantic Conventions, and Contrib.
 
@@ -67,7 +69,8 @@ OpenTelemetry 客户端旨在将每个信号中必须作为横切关注点导入
 
 API packages consist of the cross-cutting public interfaces used for instrumentation. Any portion of an OpenTelemetry client which is imported into third-party libraries and application code is considered part of the API.
 
-API 包由用于检测的横切公共接口组成。导入第三方库和应用程序代码的 OpenTelemetry 客户端的任何部分都被视为 API 的一部分。
+API 包由用于检测的横切公共接口组成。导入的第三方库和应用程序代码的 OpenTelemetry 客户端的任何部分都被视为 API 的一部分。在一个应用程序中，
+
 
 ### SDK
 
@@ -76,7 +79,7 @@ Note that the SDK includes additional public interfaces which are not considered
 Application owners use the SDK constructors; [plugin authors](glossary.md#plugin-author) use the SDK plugin interfaces.
 [Instrumentation authors](glossary.md#instrumentation-author) MUST NOT directly reference any SDK package of any kind, only the API.
 
-SDK是接口的实现
+SDK是OpenTelemetry项目提供的API的实现，SDK由应用程序所有者安装和管理。请注意，SDK 包含其他公共接口，这些接口不被视为 API 包的一部分
 
 ### Semantic Conventions
 
