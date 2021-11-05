@@ -296,7 +296,6 @@ simple metrics like "queue length".
 
 ### Recording raw measurements   记录原始测量值
 
-
 The main classes used to record raw measurements are `Measure` and
 `Measurement`. List of `Measurement`s alongside the additional context can be
 recorded using OpenTelemetry API. So user may define to aggregate those
@@ -335,15 +334,18 @@ metrics:
 - Counter metric to report instantaneous measurement. Counter values can go
   up or stay the same, but can never go down. Counter values cannot be
   negative. There are two types of counter metric values - `double` and `long`.
-   计数器指标（Counter metric ）用于报告瞬时测量值的。Counter值可以上升或保持不变，但永远不会下降。计数器值不能为负。有两种类型的计数器度量值 - double 和 long。
+  
+   （Counter metric ）用于报告瞬时测量值的。Counter值可以上升或保持不变，但永远不会下降。Counter值不能为负。有两种类型的计数器度量值 - double 和 long。
+   
 - Gauge metric to report instantaneous measurement of a numeric value. Gauges can
   go both up and down. The gauges values can be negative. There are two types of
   gauge metric values - `double` and `long`.
   
-  （Gauge metric ）用于报告数值的瞬时测量值 。Gauges可以上升也可以下降。仪表值可以为负。有两种类型的仪表度量值 - double 和 long。
+  （Gauge metric ）用于报告数值的瞬时测量值 。Gauges可以上升也可以下降。Gauges值可以为负。有两种类型的Gauges度量值 - double 和 long。
 
 API allows to construct the `Metric` of a chosen type. SDK defines the way to
 query the current value of a `Metric` to be exported.
+
 API 允许构建所选类型的  `Metric`（指标）。 SDK 定义了查询要导出的 Metric 的当前值的方式。
 
 Every type of a `Metric` has it's API to record values to be aggregated. API
@@ -397,7 +399,7 @@ name/value pairs, called `Baggage`. `Baggage` is intended for
 indexing observability events in one service with attributes provided by a prior service in
 the same transaction. This helps to establish a causal relationship between these events.
 
-除了跟踪传播之外，OpenTelemetry 还提供了一种用于传播名称/值对的简单机制，称为 Baggage。 Baggage 用于索引一项服务中的可观察性事件，其属性由同一事务中的先前服务提供。这有助于在这些事件之间建立因果关系。
+除了trace propagation之外，OpenTelemetry 还提供了一种用于传播名称/值对的简单机制，称为 Baggage。 Baggage 用于索引一项服务中的可观察性事件，其属性由同一事务中的先前服务提供。这有助于在这些事件之间建立因果关系。
 
 While `Baggage` can be used to prototype other cross-cutting concerns, this mechanism is primarily intended
 to convey values for the OpenTelemetry observability systems.
@@ -419,7 +421,8 @@ For backward compatibility with OpenTracing, Baggage is propagated as `Baggage` 
 using the OpenTracing bridge. New concerns with different criteria should consider creating a new
 cross-cutting concern to cover their use-case; they may benefit from the W3C encoding format but
 use a new HTTP header to convey data throughout a distributed trace.
-为了与 OpenTracing 向后兼容，当使用 OpenTracing 桥bridge时，Baggage 作为 Baggage 传播。具有不同标准的 cross-cutting   应考虑创建一个新的跨领域关注点以涵盖其用例；它们可能受益于 W3C 编码格式，但使用新的 HTTP 标头在整个分布式跟踪中传送数据。
+
+为了与 OpenTracing 向后兼容，当使用 OpenTracing bridge时，Baggage 作为 Baggage 传播。具有不同标准的 cross-cutting   应考虑创建一个新的跨领域关注点以涵盖其用例；它们可能受益于 W3C 编码格式，但使用新的 HTTP 标头在整个分布式跟踪中传送数据。
 
 ## Resources
 
