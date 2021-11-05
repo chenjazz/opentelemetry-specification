@@ -106,21 +106,21 @@ source of truth for generation. Each language implementation SHOULD
 provide language-specific support to the
 [code generator](https://github.com/open-telemetry/build-tools/tree/main/semantic-conventions#code-generator).
 
-collector和客户端库都应该自动生成语义约定键和枚举值到常量（或语言惯用语等价物?）。在语义约定稳定之前，不应将生成的值分发到稳定的包中。YAML 文件必须用作生成的真实来源？。每个语言实现都应该为代码生成器提供特定于语言的支持？。
+collector和客户端库都应该自动生成语义约定键和枚举值到常量（或语言惯用语等价方式）。在语义约定稳定之前，不应将生成的值分发到稳定的包中。YAML 文件必须用作生成的真实来源？。每个语言实现都应该为代码生成器提供特定于语言的支持？。
 
  
 
-### Contrib Packages
+### Contrib Packages   Contrib包
 
 The OpenTelemetry project maintains integrations with popular OSS projects which have been identified as important for observing modern web services.
 Example API integrations include instrumentation for web frameworks, database clients, and message queues.
 Example SDK integrations include plugins for exporting telemetry to popular analysis tools and telemetry storage systems.
 
-OpenTelemetry 项目保持与流行的 OSS 项目的集成，这些项目已被确定为对观察现代 Web 服务很重要。OpenTelemetry 项目保持与流行的 OSS 项目的集成，这些项目已被确定为对观察现代 Web 服务很重要。示例 SDK 集成包括用于将遥测数据导出到流行分析工具和遥测存储系统（telemetry storage systems）的插件。
+OpenTelemetry 项目保持与流行的 OSS 项目的集成，这些项目已被确定为对观察现代 Web 服务很重要。
+示例 API 集成包括 Web 框架、数据库客户端和消息队列的检测。
+示例 SDK 集成包括用于将遥测数据导出到流行分析工具和遥测存储系统（telemetry storage systems）的插件。
 
 Some plugins, such as OTLP Exporters and TraceContext Propagators, are required by the OpenTelemetry specification. These required plugins are included as part of the SDK.
-
-
 
 OpenTelemetry 规范需要一些插件，例如 OTLP 导出器（Exporters）和 TraceContext 传播器（Propagators）。
 
