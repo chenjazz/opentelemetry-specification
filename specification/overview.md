@@ -69,13 +69,13 @@ This makes OpenTelemetry a [**cross-cutting concern**](https://en.wikipedia.org/
 OpenTelemetry clients are designed to separate the portion of each signal which must be imported as cross-cutting concerns from the portions which can be managed independently. OpenTelemetry clients are also designed to be an extensible framework.
 To accomplish these goals, each signal consists of four types of packages: API, SDK, Semantic Conventions, and Contrib.
 
-OpenTelemetry 客户端旨在将每个信号中必须作为横切关注点导入的部分与可以独立管理的部分分开。OpenTelemetry 客户端也被设计成一个可扩展的框架.为了实现这些目标，每个signal由四种类型的包组成：API、SDK、语义约定和 Contrib。
+OpenTelemetry 客户端旨在将每个signal中必须作为横切关注点导入的部分与可以独立管理的部分分开。OpenTelemetry 客户端也被设计成一个可扩展的框架.为了实现这些目标，每个signal由四种类型的包组成：API、SDK、Semantic Convention（语义约定）和 Contrib。
 
 ### API
 
 API packages consist of the cross-cutting public interfaces used for instrumentation. Any portion of an OpenTelemetry client which is imported into third-party libraries and application code is considered part of the API.
 
-API 包由用于检测的横切公共接口组成。导入的第三方库和应用程序代码的 OpenTelemetry 客户端的任何部分都被视为 API 的一部分。
+API 包由用于 instrumentation 的横切公共接口组成。导入的第三方库 和 应用程序代码 的 OpenTelemetry 客户端的任何部分都被视为 API 的一部分。
 
 
 ### SDK
