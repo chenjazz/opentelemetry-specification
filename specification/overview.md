@@ -14,7 +14,7 @@ Table of Contents
   * [Semantic Conventions](#semantic-conventions)
   * [Contrib Packages](#contrib-packages)
   * [Versioning and Stability](#versioning-and-stability)
-- [Tracing Signal](#tracing-signal) 跟踪信号
+- [Tracing Signal](#tracing-signal) 跟踪
   * [Traces](#traces)
   * [Spans](#spans)
   * [SpanContext](#spancontext)
@@ -40,7 +40,11 @@ Table of Contents
 
 This document provides an overview of the OpenTelemetry project and defines important fundamental terms.
 
+本文档概述了 OpenTelemetry 项目并定义了重要的基本术语。
+
 Additional term definitions can be found in the [glossary](glossary.md).
+
+其他术语定义可以在 (glossary.md) 中找到。
 
 ## OpenTelemetry Client Architecture 客户端架构
 
