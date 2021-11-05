@@ -149,7 +149,7 @@ to start an action on a website - in this example, the trace will represent
 calls made between the downstream services that handled the chain of requests
 initiated by this button being pressed.
 
-分布式跟踪是一组事件，由单个逻辑操作触发，跨应用程序的各个组件进行整合。分布式跟踪包含跨越进程、网络和安全边界的事件。当有人按下按钮在网站上开始操作时，可能会启动分布式跟踪 - 在此示例中，跟踪将表示下游服务之间进行的调用，这些服务处理由按下此按钮发起的请求链。
+distributed trace（分布式跟踪）是一组事件，由单个逻辑操作触发，跨应用程序的各个组件进行整合。分布式跟踪包含跨越进程、网络和安全边界的事件。当有人按下按钮在网站上开始操作时，可能会启动分布式跟踪 - 在此示例中，跟踪将表示下游服务之间进行的调用，这些服务处理由按下此按钮发起的请求链。
 
 ### Traces
 
@@ -202,7 +202,7 @@ the following state:
 span表示事务中的操作。每个 Span 封装了以下状态：
 
 - An operation name  操作名
-- A start and finish timestamp  开始结束时间
+- A start and finish timestamp  开始结束时间戳
 - [**Attributes**](./common/common.md#attributes): A list of key-value pairs.   键值对列表
 - A set of zero or more **Events**, each of which is itself a tuple (timestamp, name, [**Attributes**](./common/common.md#attributes)). The name must be strings. 一组零个或多个Events，每个本身都是一个元组（时间戳、名称、Attributes）。名称必须是字符串。
 - Parent's **Span** identifier.  父级的 Span 标识符
@@ -228,17 +228,17 @@ propagated from parent to child **Spans**.
   practically sufficient probability by being made as 8 randomly generated
   bytes. When passed to a child Span this identifier becomes the parent span id
   for the child **Span**.
-  SpanId 是span的标识符。通过将其生成为 8 个随机生成的字节，它是全局唯一的，具有实际足够的可能性。当传递给子跨度时，此标识符成为子跨度的父跨度 ID。
+  SpanId 是span的标识符。通过将其生成为 8 个随机生成的字节，它是全局唯一的，具有实际足够的可能性。当传递给子span时，此标识符成为子span的父span ID。
 - **TraceFlags** represents the options for a trace. It is represented as 1
-  byte (bitmap).
+  byte (bitmap).TraceFlags 表示trace的选项。它表示为 1 个字节（位图）
   - Sampling bit -  Bit to represent whether trace is sampled or not (mask
     `0x1`).
-    TraceFlags 表示跟踪的选项。它表示为 1 个字节（位图）。 采样位 - 表示是否对跟踪进行采样的位（掩码 0x1）。
+     采样位 - 表示是否对trace进行采样的位（掩码 0x1）。
 - **Tracestate** carries tracing-system specific context in a list of key value
   pairs. **Tracestate** allows different vendors propagate additional
   information and inter-operate with their legacy Id formats. For more details
   see [this](https://w3c.github.io/trace-context/#tracestate-field).
-  Tracestate 在键值对列表中携带跟踪系统特定的上下文。 Tracestate 允许不同的供应商传播额外的信息并与其旧的 Id 格式进行互操作？。有关更多详细信息，请参阅此。
+  Tracestate 在键值对列表中携带tracing-system（跟踪系统）特定的上下文。 Tracestate 允许不同的供应商传播额外的信息并与其旧的 Id 格式进行互操作。有关更多详细信息，请参阅此。
 
 ### Links between spans
 
@@ -249,7 +249,7 @@ A **Span** may be linked to zero or more other **Spans** (defined by
 initiated by multiple initiating **Spans**, each representing a single incoming
 item being processed in the batch.
 
-一个 Span 可以链接到零个或多个其他有因果关系的 Span（由 SpanContext 定义）。Links 可以指向单个Trace 内或跨不同Trace 的Spans 。Links 可用于表示批处理操作，其中一个 Span 由多个启动 Span 启动，每个 Span 表示正在批处理中处理的单个传入项目。
+一个 Span 可以链接到零个或多个其他有因果关系的 Span（由 SpanContext 定义）。Links 可以指向单个Trace内 或 跨不同Trace 的Spans 。Links 可用于表示批处理操作，其中一个 Span 由多个启动 Span 启动，每个 Span 表示正在批处理中处理的单个传入项目。
 
 Another example of using a **Link** is to declare the relationship between
 the originating and following trace. This can be used when a **Trace** enters trusted
