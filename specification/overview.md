@@ -54,13 +54,15 @@ At the highest architectural level, OpenTelemetry clients are organized into [**
 Each signal provides a specialized form of observability. For example, tracing, metrics, and baggage are three separate signals.
 Signals share a common subsystem – **context propagation** – but they function independently from each other.
 
-在最高的架构中，OpenTelemetry 是由 signals组织的，每一个signals提供了专门的提供者，比如tracing, metrics, and baggage是不同的signals。signal共享一个子系统-- **context propagation**，但他们彼此独立。
+在最高的架构中，OpenTelemetry 是由 signals组织的，每个signals都提供了一种特殊形式的可观察性。比如tracing, metrics, and baggage是不同的signal。signal共享一个子系统-- **context propagation**，但他们彼此独立。
 
 Each signal provides a mechanism for software to describe itself. A codebase, such as web framework or a database client, takes a dependency on various signals in order to describe itself. OpenTelemetry instrumentation code can then be mixed into the other code within that codebase.
 This makes OpenTelemetry a [**cross-cutting concern**](https://en.wikipedia.org/wiki/Cross-cutting_concern) - a piece of software which is mixed into many other pieces of software in order to provide value. Cross-cutting concerns, by their very nature, violate a core design principle – separation of concerns. As a result, OpenTelemetry client design requires extra care and attention to avoid creating issues for the codebases which depend upon these cross-cutting APIs.
 
-每个signal提供了软件机制描述他自己。一个代码库，像是web框架或者数据库客户端，需要以来不同的signal描述自己。然后可以将 OpenTelemetry 检测代码混合到该代码库中的其他代码中。？
-这使得 OpenTelemetry 成为一个横切关注点——一种混合到许多其他软件中以提供价值的软件。代码交叉，显然，违反了核心设计原则--分离原则。所以，OpenTelemetry 客户端设计需要格外小心和注意，以避免为依赖于这些横切 API 的代码库产生问题。
+每个signal为软件提供了一种描述自身的机制。代码库，例如 Web 框架或数据库客户端，依赖于各种signal来描述自身。然后可以将 OpenTelemetry instrumentation 代码可以被混合到该代码库中的其他代码中。
+这使得 OpenTelemetry 成为一个横切关注点——一种混合到许多其他软件中以提供价值的软件。横切关注点，就其本质而言，违反了核心设计原则——关注点分离。所以，OpenTelemetry 客户端设计需要格外小心和注意，以避免为依赖于这些横切 API 的代码库产生问题。
+
+>这里的描述自己指的是 自己的运行时间，运行状态，消耗内存等
 
 >“cross-cutting concerns” 横切关注点：指的是两个非常不一样的组件存在一些类似的功能
 
