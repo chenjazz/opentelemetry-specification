@@ -27,7 +27,7 @@ metrics, traces, and logs. It is a set of name/value pairs describing
 user-defined properties. Each name in `Baggage` MUST be associated with
 exactly one value.
 
-Baggage 用于注释遥测，将上下文和信息添加到指标、跟踪和日志中。它是一组描述用户定义属性的名称/值对。 Baggage 中的每个名称必须与一个值相关联。
+Baggage 用于注释遥测，将上下文和信息添加到metrics、traces和logs中。它是一组描述用户定义属性的名称/值对。 Baggage 中的每个名称必须与一个值相关联。
 
 The Baggage API consists of:
 
