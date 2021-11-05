@@ -147,7 +147,7 @@ See [Library Guidelines](library-guidelines.md#sdk-implementation) and
 
 Constructors are public code used by Application Owners to initialize and configure the OpenTelemetry SDK and contrib packages. Examples of constructors include configuration objects, environment variables, and builders.
 
-构造函数是应用程序所有者用来初始化和配置 OpenTelemetry SDK 和 contrib 包的公共代码。构造器的示例包括配置对象、环境变量和构建器。
+Constructors构造器是应用程序所有者用来初始化和配置 OpenTelemetry SDK 和 contrib 包的公共代码。构造器的示例包括配置对象、环境变量和构建器。
 
 ### SDK Plugins
 
