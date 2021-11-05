@@ -75,7 +75,7 @@ OpenTelemetry 客户端旨在将每个signal中必须作为横切关注点导入
 
 API packages consist of the cross-cutting public interfaces used for instrumentation. Any portion of an OpenTelemetry client which is imported into third-party libraries and application code is considered part of the API.
 
-API 包由用于 instrumentation 的横切公共接口组成。导入的第三方库 和 应用程序代码 的 OpenTelemetry 客户端的任何部分都被视为 API 的一部分。
+API 包 包括 ： 用于 instrumentation 的横切公共接口 。OpenTelemetry 客户端 （导入的第三方库 和 应用程序代码 ） 的任何部分都被视为 API 的一部分。
 
 
 ### SDK
@@ -85,7 +85,7 @@ Note that the SDK includes additional public interfaces which are not considered
 Application owners use the SDK constructors; [plugin authors](glossary.md#plugin-author) use the SDK plugin interfaces.
 [Instrumentation authors](glossary.md#instrumentation-author) MUST NOT directly reference any SDK package of any kind, only the API.
 
-SDK是OpenTelemetry项目提供的API的实现，SDK由应用程序所有者安装和管理。请注意，SDK 包含其他公共接口，这些接口不被视为 API 包的一部分，因为它们不是横切关注点。这些公共接口被定义为构造函数和插件接口？。应用程序所有者使用 SDK 构造函数；插件作者使用 SDK 插件接口。Instrumentation作者不得直接引用任何类型的任何 SDK 包，只能引用 API
+SDK是OpenTelemetry项目提供的API的实现，SDK由应用程序所有者安装和管理。请注意，SDK 包含其他公共接口，这些接口不被视为 API 包的一部分，因为它们不是横切关注点。这些公共接口 指的是 构造器 和插件接口。应用程序所有者使用 SDK 构造器；插件作者使用 SDK 插件接口。Instrumentation作者不得直接引用任何类型的任何 SDK 包，只能引用 API
 
 ### Semantic Conventions   语义约定
 
