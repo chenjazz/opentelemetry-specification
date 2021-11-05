@@ -59,7 +59,7 @@ The maintainer of a shared library which is depended upon by many applications, 
 The maintainer of OpenTelemetry instrumentation written against the OpenTelemetry API.
 This may be instrumentation written within application code, within a shared library, or within an instrumentation library.
 
-针对 OpenTelemetry API 编写的 OpenTelemetry 工具的维护者。这可能是在应用程序代码、共享库或检测库中编写的检测。
+针对 OpenTelemetry API 编写的 OpenTelemetry 工具的维护者。这可能是在应用程序代码、共享库或instrumentation 库中编写的检测。
 
 ### Plugin Author 插件作者
 
