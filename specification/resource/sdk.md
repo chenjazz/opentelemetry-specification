@@ -10,11 +10,15 @@ part of a Deployment which also has a name. All three of these attributes can be
 included in the `Resource`. Note that there are certain
 ["standard attributes"](semantic_conventions/README.md) that have prescribed meanings.
 
+资源是将遥测作为属性生成的实体的不可变表示。例如，在 Kubernetes 上的容器中运行的产生遥测的进程有一个 Pod 名称，它位于命名空间中，并且可能是也有名称的 Deployment 的一部分。所有这三个属性都可以包含在资源中。请注意，某些“标准属性”具有规定的含义。
+
 The primary purpose of resources as a first-class concept in the SDK is
 decoupling of discovery of resource information from exporters. This allows for
 independent development and easy customization for users that need to integrate
 with closed source environments. The SDK MUST allow for creation of `Resources` and
 for associating them with telemetry.
+
+资源作为 SDK 中的 一流概念 的主要目的是将资源信息的发现与导出器解耦。这允许需要与闭源环境集成的用户进行独立开发和轻松定制。 SDK 必须允许创建 `资源` 并将它们与遥测相关联。
 
 When used with distributed tracing, a resource can be associated with the
 [TracerProvider](../trace/api.md#tracerprovider) when the TracerProvider is created.
@@ -22,11 +26,15 @@ That association cannot be changed later.
 When associated with a `TracerProvider`,
 all `Span`s produced by any `Tracer` from the provider MUST be associated with this `Resource`.
 
+当与分布式tracing一起使用时，可以在创建 TracerProvider 时将资源与 TracerProvider 相关联。以后无法更改该关联。当与 TracerProvider 相关联时，来自提供者的任何 Tracer 产生的所有 Span 必须与此资源相关联。
+
 Analogous to distributed tracing, when used with metrics,
 a resource can be associated with a `MeterProvider`.
 When associated with a [`MeterProvider`](../metrics/api.md#meterprovider),
 all metrics produced by any `Meter` from the provider will be
 associated with this `Resource`.
+
+类似于分布式tracing，当与指标metrics一起使用时，资源可以与 MeterProvider 相关联。当与 MeterProvider 相关联时，提供者的任何 Meter 生成的所有指标都将与此资源相关联。
 
 ## SDK-provided resource attributes
 
