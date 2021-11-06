@@ -62,10 +62,14 @@ supplied to the `TracerProvider` must be used to create an
 [`InstrumentationLibrary`][otep-83] instance which is stored on the created
 `Tracer`.
 
+新的 Tracer 实例总是通过 TracerProvider 创建（见 API）。必须使用提供给 TracerProvider 的名称和版本参数来创建存储在创建的 Tracer 上的 InstrumentationLibrary 实例。
+
 Configuration (i.e., [SpanProcessors](#span-processor), [IdGenerator](#id-generators),
 [SpanLimits](#span-limits) and [`Sampler`](#sampling)) MUST be managed solely by
 the `TracerProvider` and it MUST provide some way to configure all of them that
 are implemented in the SDK, at least when creating or initializing it.
+
+配置（即 SpanProcessors、IdGenerator、SpanLimits 和 Sampler）必须由 TracerProvider 单独管理，并且它必须提供某种方式来配置在 SDK 中实现的所有这些，至少在创建或初始化它时。
 
 The TracerProvider MAY provide methods to update the configuration. If
 configuration is updated (e.g., adding a `SpanProcessor`),
@@ -76,37 +80,53 @@ Note: Implementation-wise, this could mean that `Tracer` instances have a
 reference to their `TracerProvider` and access configuration only via this
 reference.
 
+TracerProvider 可以提供更新配置的方法。如果配置被更新（例如，添加一个 SpanProcessor），更新的配置也必须适用于所有已经返回的 Tracer（即 Tracer 是在配置更改之前还是之后从 TracerProvider 获得的都无关紧要）。注意：在实现方面，这可能意味着 Tracer 实例具有对其 TracerProvider 的引用，并且只能通过此引用访问配置。
+
 ### Shutdown
 
 This method provides a way for provider to do any cleanup required.
+
+此方法为提供程序提供了一种进行所需清理的方法。
 
 `Shutdown` MUST be called only once for each `TracerProvider` instance. After
 the call to `Shutdown`, subsequent attempts to get a `Tracer` are not allowed. SDKs
 SHOULD return a valid no-op Tracer for these calls, if possible.
 
+Shutdown 必须为每个 TracerProvider 实例调用一次。在调用 Shutdown 之后，不允许后续尝试获取 Tracer。如果可能，SDK 应该为这些调用返回一个有效的 no-op Tracer。
+
 `Shutdown` SHOULD provide a way to let the caller know whether it succeeded,
 failed or timed out.
+
+Shutdown应该提供一种方法让调用者知道它是成功、失败还是超时。
 
 `Shutdown` SHOULD complete or abort within some timeout. `Shutdown` can be
 implemented as a blocking API or an asynchronous API which notifies the caller
 via a callback or an event. OpenTelemetry client authors can decide if they want to
 make the shutdown timeout configurable.
 
+Shutdown应该在某个超时时间内完成或中止。Shutdown可以实现为阻塞 API 或异步 API，它通过回调或事件通知调用者。 OpenTelemetry 客户端作者可以决定他们是否要使Shutdown超时可配置。
+
 `Shutdown` MUST be implemented at least by invoking `Shutdown` within all internal processors.
+
+必须至少通过在所有内部处理器中调用 Shutdown 来实现 Shutdown。
 
 ### ForceFlush
 
 This method provides a way for provider to immediately export all spans that have not yet been exported for all the internal processors.
 
+此方法为提供程序提供了一种方法，可以立即导出所有内部处理器尚未导出的所有span。
+
+
 `ForceFlush` SHOULD provide a way to let the caller know whether it succeeded,
-failed or timed out.
+failed or timed out.ForceFlush 应该提供一种方法让调用者知道它是否成功、失败或超时。
+
 
 `ForceFlush` SHOULD complete or abort within some timeout. `ForceFlush` can be
 implemented as a blocking API or an asynchronous API which notifies the caller
 via a callback or an event. OpenTelemetry client authors can decide if they want to
 make the flush timeout configurable.
 
-`ForceFlush` MUST invoke `ForceFlush` on all registered `SpanProcessors`.
+`ForceFlush` MUST invoke `ForceFlush` on all registered `SpanProcessors`.ForceFlush 必须在所有注册的 SpanProcessor 上调用 ForceFlush。
 
 ## Additional Span Interfaces
 
@@ -117,6 +137,8 @@ stored in a span for application logic.
 However, the SDK needs to eventually read back the data in some locations.
 Thus, the SDK specification defines sets of possible requirements for
 `Span`-like parameters:
+
+Span 接口的 API 级别定义仅定义了对 Span 的只写访问。这很好，因为instrumentations和应用程序并不打算将存储在跨度中的span用于应用程序逻辑。但是，SDK 最终需要回读某些位置的数据。因此，SDK 规范为类似 Span 的参数定义了一组可能的要求：
 
 * **Readable span**: A function receiving this as argument MUST be able to
   access all information that was added to the span,
@@ -153,17 +175,21 @@ Thus, the SDK specification defines sets of possible requirements for
   (for example, the `Span` could be one of the parameters passed to such a function,
   or a getter could be provided).
 
-## Sampling
+## Sampling  采样
 
 Sampling is a mechanism to control the noise and overhead introduced by
 OpenTelemetry by reducing the number of samples of traces collected and sent to
 the backend.
 
+采样是一种通过减少收集并发送到后端的跟踪样本数量来控制 OpenTelemetry 引入的噪声和开销的机制。
+
 Sampling may be implemented on different stages of a trace collection. The
 earliest sampling could happen before the trace is actually created, and the
 latest sampling could happen on the Collector which is out of process.
 
-The OpenTelemetry API has two properties responsible for the data collection:
+可以在跟踪收集的不同阶段实施采样。最早的采样可能发生在实际创建跟踪之前，而最新的采样可能发生在进程外的收集器上。
+
+The OpenTelemetry API has two properties responsible for the data collection: OpenTelemetry API 有两个属性负责数据收集：
 
 * `IsRecording` field of a `Span`. If `false` the current `Span` discards all
   tracing data (attributes, events, status, etc.). Users can use this property
@@ -171,20 +197,29 @@ The OpenTelemetry API has two properties responsible for the data collection:
   Processor](#span-processor) MUST receive only those spans which have this
   field set to `true`. However, [Span Exporter](#span-exporter) SHOULD NOT
   receive them unless the `Sampled` flag was also set.
+  
+  Span 的 IsRecording 字段。如果为 false，当前 Span 将丢弃所有跟踪数据（属性、事件、状态等）。用户可以使用此属性来确定是否可以避免收集昂贵的跟踪数据。Span处理器必须只接收那些将此字段设置为 true 的Span。但是，除非同时设置了 Sampled 标志，否则 Span Exporter 不应接收它们。
+  
 * `Sampled` flag in `TraceFlags` on `SpanContext`. This flag is propagated via
   the `SpanContext` to child Spans. For more details see the [W3C Trace Context
   specification](https://www.w3.org/TR/trace-context/#sampled-flag). This flag indicates that the `Span` has been
   `sampled` and will be exported. [Span Exporters](#span-exporter) MUST
   receive those spans which have `Sampled` flag set to true and they SHOULD NOT receive the ones
   that do not.
+  
+  SpanContext 上 TraceFlags 中的Sampled标志。此标志通过 SpanContext 传播到子 Span。有关更多详细信息，请参阅 W3C 跟踪上下文规范。此标志表示 Span 已被采样并将被导出。 Span 导出器必须接收那些将 Sampled 标志设置为 true 的 Span，并且他们不应接收那些没有设置的 Span。
 
 The flag combination `SampledFlag == false` and `IsRecording == true`
 means that the current `Span` does record information, but most likely the child
 `Span` will not.
 
+标志组合 SampledFlag == false 和 IsRecording == true 表示当前 Span 确实记录信息，但很可能子 Span 不会。
+
 The flag combination `SampledFlag == true` and `IsRecording == false`
 could cause gaps in the distributed trace, and because of this OpenTelemetry API
 MUST NOT allow this combination.
+
+标志组合 SampledFlag == true 和 IsRecording == false 可能会导致分布式跟踪出现间隙，并且由于此 OpenTelemetry API 不得允许这种组合。
 
 <a name="recording-sampled-reaction-table"></a>
 
@@ -201,20 +236,22 @@ The following table summarizes the expected behavior for each combination of
 The SDK defines the interface [`Sampler`](#sampler) as well as a set of
 [built-in samplers](#built-in-samplers) and associates a `Sampler` with each [`TracerProvider`].
 
+SDK 定义了接口 Sampler 以及一组内置的采样器，并为每个 [TracerProvider] 关联了一个 Sampler。
+
 ### SDK Span creation
 
-When asked to create a Span, the SDK MUST act as if doing the following in order:
+When asked to create a Span, the SDK MUST act as if doing the following in order:当要求创建 Span 时，SDK 必须像按顺序执行以下操作一样：
 
 1. If there is a valid parent trace ID, use it. Otherwise generate a new trace ID
    (note: this must be done before calling `ShouldSample`, because it expects
-   a valid trace ID as input).
+   a valid trace ID as input).如果存在有效的父跟踪 ID，请使用它。否则生成一个新的跟踪 ID（注意：这必须在调用 ShouldSample 之前完成，因为它需要一个有效的跟踪 ID 作为输入）。
 2. Query the `Sampler`'s [`ShouldSample`](#shouldsample) method
    (Note that the [built-in `ParentBasedSampler`](#parentbased) can be used to
    use the sampling decision of the parent,
-   translating a set SampledFlag to RECORD and an unset one to DROP).
+   translating a set SampledFlag to RECORD and an unset one to DROP).查询 Sampler 的 ShouldSample 方法（请注意，内置的 ParentBasedSampler 可用于使用父级的采样决策，将设置的 SampledFlag 转换为 RECORD，将未设置的转换为 DROP）。
 3. Generate a new span ID for the `Span`, independently of the sampling decision.
    This is done so other components (such as logs or exception handling) can rely on
-   a unique span ID, even if the `Span` is a non-recording instance.
+   a unique span ID, even if the `Span` is a non-recording instance.为 Span 生成一个新的 span ID，与采样决策无关。这样做是为了其他组件（例如日志或异常处理）可以依赖唯一的跨度 ID，即使Span是非记录实例。
 4. Create a span depending on the decision returned by `ShouldSample`:
    see description of [`ShouldSample`'s](#shouldsample) return value below
    for how to set `IsRecording` and `Sampled` on the Span,
@@ -222,7 +259,7 @@ When asked to create a Span, the SDK MUST act as if doing the following in order
    to pass the `Span` to `SpanProcessor`s.
    A non-recording span MAY be implemented using the same mechanism as when a
    `Span` is created without an SDK installed or as described in
-   [wrapping a SpanContext in a Span](api.md#wrapping-a-spancontext-in-a-span).
+   [wrapping a SpanContext in a Span](api.md#wrapping-a-spancontext-in-a-span).根据 ShouldSample 返回的决定创建一个 span：有关如何在 Span 上设置 IsRecording 和 Sampled 的信息，请参阅下面对 ShouldSample 返回值的说明，以及有关是否将 Span 传递给 SpanProcessors 的上表。可以使用与在未安装 SDK 的情况下创建 Span 或将 SpanContext 包装在 Span 中所述相同的机制来实现非记录跨度。
 
 ### Sampler
 
