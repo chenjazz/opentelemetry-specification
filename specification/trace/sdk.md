@@ -261,11 +261,14 @@ When asked to create a Span, the SDK MUST act as if doing the following in order
    `Span` is created without an SDK installed or as described in
    [wrapping a SpanContext in a Span](api.md#wrapping-a-spancontext-in-a-span).根据 ShouldSample 返回的决定创建一个 span：有关如何在 Span 上设置 IsRecording 和 Sampled 的信息，请参阅下面对 ShouldSample 返回值的说明，以及有关是否将 Span 传递给 SpanProcessors 的上表。可以使用与在未安装 SDK 的情况下创建 Span 或将 SpanContext 包装在 Span 中所述相同的机制来实现非记录跨度。
 
-### Sampler
+### Sampler  取样器
+
 
 `Sampler` interface allows users to create custom samplers which will return a
 sampling `SamplingResult` based on information that is typically available just
 before the `Span` was created.
+
+采样器接口允许用户创建自定义采样器，该采样器将根据创建 Span 之前通常可用的信息返回采样 SamplingResult。
 
 #### ShouldSample
 
@@ -285,7 +288,7 @@ Returns the sampling Decision for a `Span` to be created.
   [Links Between Spans](../overview.md#links-between-spans).
 
 Note: Implementations may "bundle" all or several arguments together in a single
-object.
+object.  注意：实现可以将所有或多个参数“捆绑”在一个对象中。
 
 **Return value:**
 
@@ -312,10 +315,13 @@ be displayed on debug pages or in the logs. Example:
 
 Description MUST NOT change over time and caller can cache the returned value.
 
-### Built-in samplers
+### Built-in samplers  内置采样器
+
 
 OpenTelemetry supports a number of built-in samplers to choose from.
 The default sampler is `ParentBased(root=AlwaysOn)`.
+
+OpenTelemetry 支持多种内置采样器可供选择。默认采样器是 ParentBased(root=AlwaysOn)。
 
 #### AlwaysOn
 
@@ -397,16 +403,25 @@ Optional parameters:
 
 Span attributes MUST adhere to the [common rules of attribute limits](../common/common.md#attribute-limits).
 
+Span属性必须遵守属性限制的通用规则。
+
+
 SDK Spans MAY also discard links and events that would increase the number of
 elements of each collection beyond the configured limit.
+
+SDK Span 还可以丢弃会增加每个集合的元素数量超出配置限制的链接和事件。
 
 If the SDK implements the limits above it MUST provide a way to change these
 limits, via a configuration to the TracerProvider, by allowing users to
 configure individual limits like in the Java example bellow.
 
+如果 SDK 实现了上面的限制，它必须提供一种方法来更改这些限制，通过配置到 TracerProvider，允许用户像下面的 Java 示例中那样配置单个限制。
+
 The name of the configuration options SHOULD be `EventCountLimit` and `LinkCountLimit`. The options MAY be bundled in a class,
 which then SHOULD be called `SpanLimits`. Implementations MAY provide additional
 configuration such as `AttributePerEventCountLimit` and `AttributePerLinkCountLimit`.
+
+配置选项的名称应该是 EventCountLimit 和 LinkCountLimit。这些选项可以捆绑在一个类中，然后应该称为 SpanLimits。实现可以提供额外的配置，例如 AttributePerEventCountLimit 和 AttributePerLinkCountLimit。
 
 ```java
 public final class SpanLimits {
@@ -440,6 +455,8 @@ should not be emitted once per span, or per discarded attribute, event, or links
 
 The SDK MUST by default randomly generate both the `TraceId` and the `SpanId`.
 
+默认情况下，SDK 必须随机生成 TraceId 和 SpanId。
+
 The SDK MUST provide a mechanism for customizing the way IDs are generated for
 both the `TraceId` and the `SpanId`.
 
@@ -465,6 +482,8 @@ Core OpenTelemetry repositories.
 Span processor is an interface which allows hooks for span start and end method
 invocations. The span processors are invoked only when
 [`IsRecording`](api.md#isrecording) is true.
+
+Span处理器是一个接口，它允许Span开始和结束方法调用的钩子。只有当 IsRecording 为真时才会调用跨度处理器
 
 Built-in span processors are responsible for batching and conversion of spans to
 exportable representation and passing batches to exporters.
@@ -617,9 +636,13 @@ configured `SpanExporter`.
 implement so that they can be plugged into OpenTelemetry SDK and support sending
 of telemetry data.
 
+Span 导出器定义了特定于协议的导出器必须实现的接口，以便它们可以插入 OpenTelemetry SDK 并支持遥测数据的发送。
+
 The goal of the interface is to minimize burden of implementation for
 protocol-dependent telemetry exporters. The protocol exporter is expected to be
 primarily a simple telemetry data encoder and transmitter.
+
+该接口的目标是最大程度地减少依赖于协议的遥测导出器的实现负担。协议导出器主要是一个简单的遥测数据编码器和发射器。
 
 ### Interface Definition
 
@@ -627,6 +650,8 @@ The exporter must support two functions: **Export** and **Shutdown**. In
 strongly typed languages typically there will be 2 separate `Exporter`
 interfaces, one that accepts spans (SpanExporter) and one that accepts metrics
 (MetricsExporter).
+
+导出器必须支持两种功能：导出和关闭。在强类型语言中，通常会有 2 个单独的 Exporter 接口，一个接受跨度 (SpanExporter)，另一个接受度量 (MetricsExporter)。
 
 #### `Export(batch)`
 
@@ -696,10 +721,13 @@ implemented as a blocking API or an asynchronous API which notifies the caller
 via a callback or an event. OpenTelemetry client authors can decide if they want to
 make the flush timeout configurable.
 
-### Further Language Specialization
+### Further Language Specialization  将来的语言规范
+
 
 Based on the generic interface definition laid out above library authors must
 define the exact interface for the particular language.
+
+基于上面列出的通用接口定义，库作者必须为特定语言定义确切的接口。
 
 Authors are encouraged to use efficient data structures on the interface
 boundary that are well suited for fast serialization to wire formats by protocol
@@ -711,12 +739,16 @@ allocations and use allocation arenas where possible, thus avoiding explosion of
 allocation/deallocation/collection operations in the presence of high rate of
 telemetry data generation.
 
+鼓励作者在接口边界上使用高效的数据结构，这些结构非常适合协议导出器快速序列化为有线格式，并最大限度地减少内存管理器的压力。后者通常需要了解如何优化快速生成的、短期的遥测数据结构，以使特定语言的内存管理器更轻松。一般建议是在可能的情况下尽量减少分配数量并使用分配区域，从而避免在遥测数据生成率很高的情况下分配/解除分配/收集操作的爆炸性增长。
+
 #### Examples
 
 These are examples on what the `Exporter` interface can look like in specific
 languages. Examples are for illustration purposes only. OpenTelemetry client authors
 are free to deviate from these provided that their design remain true to the
 spirit of `Exporter` concept.
+
+这些示例说明了导出器界面在特定语言中的外观。示例仅用于说明目的。 OpenTelemetry 客户端作者可以自由地偏离这些，前提是他们的设计仍然忠于 Exporter 概念的精神。
 
 ##### Go SpanExporter Interface
 
