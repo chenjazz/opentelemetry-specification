@@ -875,12 +875,16 @@ remote span.  As a simple guideline, instrumentation should create a
 new Span prior to extracting and serializing the SpanContext for a
 remote call.
 
+为了使 SpanKind 有意义，调用者应该安排单个 Span 不能用于多个目的。例如，服务器端Span不应直接用作另一个远程Span的父级。作为一个简单的准则，instrumentation应该在为远程调用提取和序列化 SpanContext 之前创建一个新的 Span。
+
 Note: there are complex scenarios where a CLIENT span may have a child
 that is also logically a CLIENT span, or a PRODUCER span might have a local child
 that is a CLIENT span, depending on how the various libraries that are providing
 the functionality are built and instrumented. These scenarios, when they occur,
 should be detailed in the semantic conventions appropriate to the relevant
 libraries.
+
+注意：在一些复杂的场景中，CLIENT span 可能有一个逻辑上也是 CLIENT span 的子级，或者 PRODUCER span 可能有一个 CLIENT span 的本地子级，这取决于提供功能的各种库的构建方式和instrumented。当这些场景发生时，应在适用于相关库的语义约定中详细说明。
 
 These are the possible SpanKinds:
 
@@ -918,6 +922,8 @@ For languages which support concurrent execution the Tracing APIs provide
 specific guarantees and safeties. Not all of API functions are safe to
 be called concurrently.
 
+对于支持并发执行的语言，跟踪 API 提供了特定的保证和安全性。并非所有 API 函数都可以安全地并发调用。
+
 **TracerProvider** - all methods are safe to be called concurrently.
 
 **Tracer** - all methods are safe to be called concurrently.
@@ -947,3 +953,5 @@ If the parent `Context` contains no `Span`, an empty non-recording Span MUST be 
 This means that a `SpanContext` that has been provided by a configured `Propagator`
 will be propagated through to any child span and ultimately also `Inject`,
 but that no new `SpanContext`s will be created.
+
+一般来说，在没有安装 SDK 的情况下，Trace API 是一个“无操作”的 API。这意味着在 Tracer 或 Span 上的操作应该没有副作用并且什么都不做。然而，这个通用规则有一个重要的例外，它与 SpanContext 的传播有关：API 必须创建一个非记录 Span，其 SpanContext 位于父上下文的 Span 中（无论是显式给定还是隐式当前) 或者，如果父级是一个非记录的 Span（如果没有 SDK 存在，它通常总是这样），它可以从创建方法返回父级 Span。如果父上下文不包含 Span，则必须返回一个空的非记录 Span（即，具有 SpanContext 和全零 Span 和 Trace ID、空 Tracestate 和未采样的 TraceFlags）。这意味着由配置的传播器提供的 SpanContext 将传播到任何子 Span 并最终也注入，但不会创建新的 SpanContexts。
