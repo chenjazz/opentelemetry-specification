@@ -731,6 +731,8 @@ to ignore previous calls.
 Updates the `Span` name. Upon this update, any sampling behavior based on `Span`
 name will depend on the implementation.
 
+更新Span名称。在此更新后，任何基于 Span 名称的采样行为都将取决于实现。
+
 Note that [Samplers](sdk.md#sampler) can only consider information already
 present during span creation. Any changes done later, including updated span
 name, cannot change their decisions.
