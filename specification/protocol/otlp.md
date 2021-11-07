@@ -6,6 +6,8 @@ OpenTelemetry Protocol (OTLP) specification describes the encoding, transport,
 and delivery mechanism of telemetry data between telemetry sources, intermediate
 nodes such as collectors and telemetry backends.
 
+OpenTelemetry Protocol (OTLP) 规范描述了遥测源、中间节点（如收集器和遥测后端）之间遥测数据的编码、传输和传递机制。
+
 <details>
 <summary>
 Table of Contents
