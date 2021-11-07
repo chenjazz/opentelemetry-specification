@@ -750,6 +750,8 @@ Required parameters:
 Signals that the operation described by this span has
 now (or at the time optionally specified) ended.
 
+表示此span描述的Signal现在（或在可选指定的时间）结束。
+
 Implementations SHOULD ignore all subsequent calls to `End` and any other Span methods,
 i.e. the Span becomes non-recording by being ended
 (there might be exceptions when Tracer is streaming events
@@ -808,13 +810,13 @@ additional exception-specific parameters and all other parameters being optional
 ### Span lifetime
 
 Span lifetime represents the process of recording the start and the end
-timestamps to the Span object:
+timestamps to the Span object:Span 生命周期表示将开始和结束时间戳记录到 Span 对象的过程
 
 - The start time is recorded when the Span is created.
 - The end time needs to be recorded when the operation is ended.
 
 Start and end time as well as Event's timestamps MUST be recorded at a time of a
-calling of corresponding API.
+calling of corresponding API.开始和结束时间以及事件的时间戳必须在调用相应 API 时记录。
 
 ### Wrapping a SpanContext in a Span
 
@@ -828,6 +830,8 @@ If a new type is required for supporting this operation, it SHOULD NOT be expose
 publicly if possible (e.g. by only exposing a function that returns something
 with the Span interface type). If a new type is required to be publicly exposed,
 it SHOULD be named `NonRecordingSpan`.
+
+如果需要一个新类型来支持这个操作，如果可能的话，它不应该被公开（例如，只公开一个返回具有 Span 接口类型的东西的函数）。如果需要公开暴露一个新类型，它应该被命名为 NonRecordingSpan。
 
 The behavior is defined as follows:
 
