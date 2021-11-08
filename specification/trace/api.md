@@ -60,13 +60,13 @@ this section defines some generic requirements for this API.
 OpenTelemetry can operate on time values up to nanosecond (ns) precision.
 The representation of those values is language specific.
 
-OpenTelemetry 可以对高达纳秒 (ns) 精度的时间值进行操作。这些值的表示是特定于语言的。
+OpenTelemetry 可以对高达纳秒 (ns) 精度的时间值进行操作。这些值的表现形式是特定于语言的。
 
 #### Timestamp
 
 A timestamp is the time elapsed since the Unix epoch.
 
-使用unix时间戳
+timestamp使用unix时间戳
 
 * The minimal precision is milliseconds.  最小精度为毫秒。
 * The maximal precision is nanoseconds.  最大精度为纳秒。
@@ -85,11 +85,12 @@ A duration is the elapsed time between two events.
 
 `Tracer`s can be accessed with a `TracerProvider`.
 
+Tracer 可以通过 TracerProvider 获取。
+
 In implementations of the API, the `TracerProvider` is expected to be the
 stateful object that holds any configuration.
 
-在 API 的实现中，TracerProvider 应该是保存任何配置的有状态对象。
-
+在 API 的实现中，TracerProvider 应该是保存一些配置的有状态对象。
 
 Normally, the `TracerProvider` is expected to be accessed from a central place.
 Thus, the API SHOULD provide a way to set/register and access
