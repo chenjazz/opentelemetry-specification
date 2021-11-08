@@ -41,12 +41,12 @@ Table of Contents
 
 </details>
 
-The Tracing API consist of these main classes:
+The Tracing API consist of these main classes:         包含：
 
 - [`TracerProvider`](#tracerprovider) is the entry point of the API.  
-  It provides access to `Tracer`s.  TracerProvider 是 API 的入口点。它提供了对 Tracer 的访问。
-- [`Tracer`](#tracer) is the class responsible for creating `Span`s.  Tracer 是负责创建 Span 的类。
-- [`Span`](#span) is the API to trace an operation. Span 是用于跟踪操作的 API。
+  It provides access to `Tracer`s.                       TracerProvider 是 API 的入口点。它提供了对 Tracer 的访问。
+- [`Tracer`](#tracer) is the class responsible for creating `Span`s.     Tracer 是负责创建 Span 的类。
+- [`Span`](#span) is the API to trace an operation.   Span 是用于跟踪操作的 API。
 
 ## Data types
 
