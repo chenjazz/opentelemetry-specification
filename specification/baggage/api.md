@@ -121,8 +121,10 @@ the [`Context`](../context/context.md).
 If an implementation of this API does not operate directly on the `Context`, it
 MUST provide the following functionality to interact with a `Context` instance:
 
-- Extract the `Baggage` from a `Context` instance
-- Insert the `Baggage` to a `Context` instance
+如果此 API 的实现不直接对 Context 进行操作，则它必须提供以下功能以与 Context 实例交互：
+
+- Extract the `Baggage` from a `Context` instance   从 Context 实例中提取 Baggage
+- Insert the `Baggage` to a `Context` instance   将 Baggage 插入 Context 实例
 
 The functionality listed above is necessary because API users SHOULD NOT have
 access to the [Context Key](../context/context.md#create-a-key) used by the
@@ -135,7 +137,6 @@ If the language has support for implicitly propagated `Context` (see
 provide the following functionality:
 
 如果该语言支持隐式传播的上下文（参见此处），则 API 还应提供以下功能：
-
 
 - Get the currently active `Baggage` from the implicit context. This is
 equivalent to getting the implicit context, then extracting the `Baggage` from
