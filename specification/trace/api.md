@@ -342,22 +342,22 @@ A `Span` represents a single operation within a trace. Spans can be nested to
 form a trace tree. Each trace contains a root span, which typically describes
 the entire operation and, optionally, one or more sub-spans for its sub-operations.
 
-`Span`表示跟踪中的单个操作。`Span`可以嵌套以形成跟踪树。每个trace包含一个根Span，它通常描述整个操作，并且可选地描述其子操作的一个或多个子Span。
+`Span`表示跟踪中的单个操作。`Span`可以嵌套以形成跟踪树。每个trace包含一个 `根Span` ，它通常描述整个操作，并且可选地描述其子操作的一个或多个子Span。
 
 <a name="span-data-members"></a>
 `Span`s encapsulate:  封装
 
-- The span name
+- The span name  名称
 - An immutable [`SpanContext`](#spancontext) that uniquely identifies the
-  `Span`
+  `Span`  唯一标识 Span 的不可变 SpanContext
 - A parent span in the form of a [`Span`](#span), [`SpanContext`](#spancontext),
-  or null
-- A [`SpanKind`](#spankind)
-- A start timestamp
-- An end timestamp
-- [`Attributes`](../common/common.md#attributes)
-- A list of [`Link`s](#specifying-links) to other `Span`s
-- A list of timestamped [`Event`s](#add-events)
+  or null   Span、SpanContext 或 null 形式的父Span
+- A [`SpanKind`](#spankind)   SpanKind
+- A start timestamp  开始时间戳
+- An end timestamp  结束时间戳
+- [`Attributes`](../common/common.md#attributes)  Attributes
+- A list of [`Link`s](#specifying-links) to other `Span`s  指向其他 Span 的链接列表
+- A list of timestamped [`Event`s](#add-events)  带时间戳的事件列表
 - A [`Status`](#set-status).
 
 The _span name_ concisely identifies the work represented by the Span,
@@ -406,7 +406,7 @@ sub-operations which require more detailed observability. Child spans should
 measure the timing of the respective sub-operation, and may add additional
 attributes.
 
-可以创建子spans（或在某些情况下事件）来表示需要更详细可观察性的子操作。子spans应该测量相应子操作的时间，并且可以添加附加属性。
+可以创建  【子spans】（或在某些情况下事件）来表示需要更详细可观察性的子操作。子spans应该测量相应子操作的时间，并且可以添加附加属性。
 
 A `Span`'s start time SHOULD be set to the current time on [span
 creation](#span-creation). After the `Span` is created, it SHOULD be possible to
@@ -419,13 +419,13 @@ Span的开始时间应该设置为Span创建的当前时间。创建 Span 后，
 prevent misuse, implementations SHOULD NOT provide access to a `Span`'s
 attributes besides its `SpanContext`.
 
-`Span`并不意味着用于在流程中传播信息。为防止误用，实现不应提供对除 SpanContext 之外的 Span 属性的访问。
+`Span`并不意味着用于在进程中传播信息。为防止误用，实现不应提供对除 SpanContext 之外的 Span 属性的访问。
 
 Vendors may implement the `Span` interface to effect vendor-specific logic.
 However, alternative implementations MUST NOT allow callers to create `Span`s
 directly. All `Span`s MUST be created via a `Tracer`.
 
-供应商可以实现 Span 接口来影响供应商特定的逻辑。但是，替代实现不得允许调用者直接创建 Span。所有 Span 都必须通过 Tracer 创建。
+供应商可以实现 Span 接口来影响供应商特定的逻辑。但是，替代的实现 不得允许调用者直接创建 Span。所有 Span 都必须通过 Tracer 创建。
 
 ### Span Creation
 
