@@ -149,12 +149,18 @@ Span 接口的 API 级别定义仅定义了对 Span 的只写访问。这很好�
   It must also be able to reliably determine whether the Span has ended
   (some languages might implement this by having an end timestamp of `null`,
   others might have an explicit `hasEnded` boolean).
+  
+  可读的Span:接收此作为参数的函数必须能够访问添加到范围的所有信息，如 API 规范中所列。特别是，它还必须能够访问与跨度关联的 InstrumentationLibrary 和资源信息（隐式）。它还必须能够可靠地确定 Span 是否已经结束（某些语言可能通过将结束时间戳设为 null 来实现这一点，而其他语言可能具有明确的 hasEnded 布尔值）。
 
   Counts for attributes, events and links dropped due to collection limits MUST be
   available for exporters to report as described in the [exporters](./sdk_exporters/non-otlp.md#dropped-attributes-count)
   specification.
+  
+  由于收集限制而丢弃的属性、事件和链接的计数必须可供exporters按照exporter规范中的描述进行报告。
 
   A function receiving this as argument might not be able to modify the Span.
+
+   接收 this 作为参数的函数可能无法修改 Span。
 
   Note: Typically this will be implemented with a new interface or
   (immutable) value type.
@@ -162,18 +168,24 @@ Span 接口的 API 级别定义仅定义了对 Span 的只写访问。这很好�
   than exporters (e.g. a `SpanData` type might contain an immutable snapshot and
   a `ReadableSpan` interface might read information directly from the same
   underlying data structure that the `Span` interface manipulates).
+  
+  注意：通常这将使用新的接口或（不可变的）值类型来实现。在某些语言中，SpanProcessor 可能具有与导出器不同的可读跨度类型（例如，SpanData 类型可能包含不可变快照，而 ReadableSpan 接口可能直接从 Span 接口操作的相同底层数据结构中读取信息）。
 
 * **Read/write span**: A function receiving this as argument must have access to
   both the full span API as defined in the
   [API-level definition for span's interface](api.md#span-operations) and
   additionally must be able to retrieve all information that was added to the span
   (as with *readable span*).
+  
+  读/写跨度：接收此参数的函数必须能够访问跨度接口的 API 级别定义中定义的完整跨度 API，此外还必须能够检索添加到跨度中的所有信息（如可读的跨度）。
 
   It MUST be possible for functions being called with this
   to somehow obtain the same `Span` instance and type
   that the [span creation API](api.md#span-creation) returned (or will return) to the user
   (for example, the `Span` could be one of the parameters passed to such a function,
   or a getter could be provided).
+  
+  使用 this 调用的函数必须有可能以某种方式获得 Span 创建 API 返回（或将返回）给用户的相同 Span 实例和类型（例如，Span 可能是传递给此类函数的参数之一） ，或者可以提供一个getter）。
 
 ## Sampling  采样
 
@@ -488,18 +500,26 @@ Span处理器是一个接口，它允许Span开始和结束方法调用的钩子
 Built-in span processors are responsible for batching and conversion of spans to
 exportable representation and passing batches to exporters.
 
+内置的span处理器负责将span批处理和转换为可导出的表示并将批处理传递给exporters。
+
 Span processors can be registered directly on SDK `TracerProvider` and they are
 invoked in the same order as they were registered.
+
+Span 处理器可以直接在 SDK TracerProvider 上注册，它们的调用顺序与注册的顺序相同。
 
 Each processor registered on `TracerProvider` is a start of pipeline that consist
 of span processor and optional exporter. SDK MUST allow to end each pipeline with
 individual exporter.
 
+TracerProvider 上注册的每个处理器都是管道的开始，由跨度处理器和可选的导出器组成。 SDK 必须允许以单独的导出器结束每个管道。
+
 SDK MUST allow users to implement and configure custom processors and decorate
 built-in processors for advanced scenarios such as tagging or filtering.
 
+SDK 必须允许用户实现和配置自定义处理器，并为标记或过滤等高级场景装饰内置处理器。
+
 The following diagram shows `SpanProcessor`'s relationship to other components
-in the SDK:
+in the SDK:下图显示了 SpanProcessor 与 SDK 中其他组件的关系：
 
 ```
   +-----+--------------+   +-------------------------+   +-------------------+
@@ -524,6 +544,8 @@ in the SDK:
 on the thread that started the span, therefore it should not block or throw
 exceptions.
 
+当跨度启动时调用 OnStart。此方法在启动跨度的线程上同步调用，因此它不应阻塞或抛出异常。
+
 **Parameters:**
 
 * `span` - a [read/write span object](#additional-span-interfaces) for the started span.
@@ -531,9 +553,14 @@ exceptions.
   SHOULD be reflected in it.
   For example, this is useful for creating a SpanProcessor that periodically
   evaluates/prints information about all active span from a background thread.
+  
+  启动跨度的读/写跨度对象。应该可以保留对这个 span 对象的引用，并且应该在其中反映对 span 的更新。例如，这对于创建一个 SpanProcessor 很有用，该 SpanProcessor 定期评估/打印有关来自后台线程的所有活动跨度的信息。
+  
 * `parentContext` - the parent `Context` of the span that the SDK determined
   (the explicitly passed `Context`, the current `Context` or an empty `Context`
   if that was explicitly requested).
+  
+  parentContext - SDK 确定的跨度的父 Context（显式传递的 Context、当前 Context 或空的 Context，如果明确请求）。
 
 **Returns:** `Void`
 
@@ -542,6 +569,8 @@ exceptions.
 `OnEnd` is called after a span is ended (i.e., the end timestamp is already set).
 This method MUST be called synchronously within the [`Span.End()` API](api.md#end),
 therefore it should not block or throw an exception.
+
+在跨度结束后调用 OnEnd（即，结束时间戳已经设置）。此方法必须在 Span.End() API 中同步调用，因此它不应阻塞或抛出异常。
 
 **Parameters:**
 
@@ -555,6 +584,8 @@ therefore it should not block or throw an exception.
 
 Shuts down the processor. Called when SDK is shut down. This is an opportunity
 for processor to do any cleanup required.
+
+关闭处理器。 SDK 关闭时调用。这是处理器进行任何所需清理的机会。
 
 `Shutdown` SHOULD be called only once for each `SpanProcessor` instance. After
 the call to `Shutdown`, subsequent calls to `OnStart`, `OnEnd`, or `ForceFlush`
@@ -575,6 +606,8 @@ make the shutdown timeout configurable.
 This is a hint to ensure that any tasks associated with `Spans` for which the
 `SpanProcessor` had already received events prior to the call to `ForceFlush` SHOULD
 be completed as soon as possible, preferably before returning from this method.
+
+这是一个提示，以确保在调用 ForceFlush 之前，SpanProcessor 已经接收到事件的任何与 Span 关联的任务都应该尽快完成，最好在从此方法返回之前完成。
 
 In particular, if any `SpanProcessor` has any associated exporter, it SHOULD
 try to call the exporter's `Export` with all spans for which this was not
@@ -660,8 +693,12 @@ Protocol exporters that will implement this
 function are typically expected to serialize and transmit the data to the
 destination.
 
+导出一批可读的跨度。将实现此功能的协议导出器通常需要序列化数据并将其传输到目的地。
+
 Export() will never be called concurrently for the same exporter instance.
 Export() can be called again only after the current call returns.
+
+Export() 永远不会为同一个导出器实例同时调用。 Export() 只有在当前调用返回后才能再次调用
 
 Export() MUST NOT block indefinitely, there MUST be a reasonable upper limit
 after which the call must time out with an error result (`Failure`).
@@ -716,10 +753,15 @@ failed or timed out.
 such as when using some FaaS providers that may suspend the process after an
 invocation, but before the exporter exports the completed spans.
 
+ForceFlush 应该只在绝对必要的情况下被调用，例如当使用一些 FaaS 提供者时，这些提供者可能会在调用后暂停流程，但在导出器导出已完成的跨度之前。
+
 `ForceFlush` SHOULD complete or abort within some timeout. `ForceFlush` can be
 implemented as a blocking API or an asynchronous API which notifies the caller
 via a callback or an event. OpenTelemetry client authors can decide if they want to
 make the flush timeout configurable.
+
+ForceFlush 应该在某个超时时间内完成或中止。 ForceFlush 可以实现为阻塞 API 或异步 API，通过回调或事件通知调用者。 OpenTelemetry 客户端作者可以决定是否要使刷新超时可配置。
+
 
 ### Further Language Specialization  将来的语言规范
 
